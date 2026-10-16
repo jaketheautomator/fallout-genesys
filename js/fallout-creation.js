@@ -253,7 +253,7 @@ function changeSkillPurchase(id, delta) {
 function renderSkills() {
   const tagLeft = picksAvailable('tag'), rankLeft = picksAvailable('tagrank');
   return `<h2>Skills</h2><p>Choose Tag skills and Tag+Rank skills. Both are career skills for XP costs; Tag+Rank also grants one free rank. Free ranks from an Origin are included in the total, with a maximum rank of ${MAX_SKILL_RANK}.</p>
-    ${['General','Combat','Social','Knowledge'].map(group => `<div class="skill-pick-grid skill-group-header">
+    <div class="skills-table">${['General','Combat','Social','Knowledge'].map(group => `<div class="skill-pick-grid skill-group-header">
       <h3 class="skill-group-heading">${group}</h3>
       <div class="skill-choice-columns">
         <div class="skill-column-head"><span class="skill-column-label">None</span></div>
@@ -278,7 +278,7 @@ function renderSkills() {
           <div class="skill-purchase"><button type="button" data-skill-purchase="${skill.id}" data-delta="-1" ${state.purchased === 0 ? 'disabled' : ''} aria-label="Reduce purchased ${skill.name} rank">−</button><button type="button" data-skill-purchase="${skill.id}" data-delta="1" ${!canAdd ? 'disabled' : ''} aria-label="Purchase ${skill.name} rank">+</button></div>
         </div>
       </div>`;
-    }).join('')).join('')}`;
+    }).join('')).join('')}</div>`;
 }
 function render() {
   const remaining = effectiveStartingXP() - xpSpent();

@@ -118,3 +118,38 @@ body {font-family:Arial,sans-serif;}
 .equipment-container-header button{margin-left:auto;}
 .equipment-container select,.equipment-container input[type=text]{background:#102018;color:#e7f9e7;border:1px solid #568568;padding:5px;}
 .equipment-container .equipment-inventory-row{margin-top:6px;}
+
+
+/* Responsive builder frame: do not let summary content set the main track width. */
+.builder-layout { width:100%; min-width:0; grid-template-columns:minmax(0,1fr) minmax(0,250px); }
+.builder-layout > .builder,
+.builder-layout > #character-summary,
+#builder-content { min-width:0; max-width:100%; }
+#character-summary { width:100%; overflow-wrap:anywhere; }
+
+/* Skills: use the available builder width up to a comfortable reading width. */
+.skills-table { width:100%; max-width:920px; margin:0 auto; min-width:0; }
+.skills-table .skill-pick-grid { width:100%; min-width:0; }
+.skills-table .skill-pick-grid { grid-template-columns:minmax(125px,1fr) minmax(156px,1fr) minmax(136px,1fr); }
+.skills-table .skill-name { min-width:0; flex-wrap:wrap; }
+
+/* When the main builder and summary stack, let the builder fill the entire track. */
+@media (max-width:850px) {
+  .builder-layout { grid-template-columns:minmax(0,1fr); }
+  .builder-layout > .builder { width:100%; }
+  #character-summary { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+@media (max-width:600px) {
+  .skills-table .skill-pick-grid { grid-template-columns:minmax(100px,1fr) 126px 101px; column-gap:4px; }
+  .skills-table .skill-choice-columns { grid-template-columns:repeat(3,42px); }
+  .skills-table .skill-right-columns { grid-template-columns:32px 65px; column-gap:4px; }
+  .skills-table .skill-pick-row,
+  .skills-table .skill-group-header { padding-left:4px; padding-right:4px; }
+  .skills-table .skill-purchase button {width:29px;}
+  .skills-table .skill-column-label {font-size:10px;}
+  #character-summary {grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:420px) {
+  .skills-table {overflow-x:auto;}
+  .skills-table .skill-pick-grid {min-width:340px;}
+}
