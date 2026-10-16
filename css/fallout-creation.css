@@ -20,3 +20,6 @@ body {font-family:Arial,sans-serif;}
 .rank-controls span {min-width:58px;text-align:center;font-size:12px;white-space:nowrap;}
 .luck-note {color:#a8c1ae;font-size:12px;}
 @media(max-width:720px){.special-build-row{grid-template-columns:minmax(0,1fr) 45px 130px;gap:5px;padding:8px}.rank-controls{gap:3px}.rank-controls span{min-width:45px;}}
+
+/* Luck appears as the seventh SPECIAL value without rank controls. */
+.luck-build-row .luck-controls { visibility:hidden; }

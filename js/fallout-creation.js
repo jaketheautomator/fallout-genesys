@@ -7,6 +7,7 @@ const FALLOUT_RULES = Object.freeze({
     'Robobrain', 'Brotherhood Initiate', 'Child of Atom', 'Tribal', 'Enclave Remnant'
   ],
   startingXP: 110,
+  startingCaps: 1000,
   reducedRankBonusXP: 20,
   special: [
     { id: 'str', name: 'Strength', genesys: 'Brawn' },
@@ -22,7 +23,7 @@ const FALLOUT_RULES = Object.freeze({
 const creation = {
   name: '', origin: 'Survivor', currentStep: 'origin',
   ranks: Object.fromEntries(FALLOUT_RULES.special.map(s => [s.id, 2])),
-  luckMax: 5, luckCurrent: 5
+  luckMax: 5, luckCurrent: 5, caps: FALLOUT_RULES.startingCaps
 };
 
 function xpForRank(rank) {
@@ -55,12 +56,12 @@ function render() {
         const nextCost = (rank + 1) * 10;
         return `<div class="special-build-row"><div><strong>${s.id.toUpperCase()}</strong><small>${s.name} / ${s.genesys}</small></div>
           <output class="special-score">${FALLOUT_RULES.score[rank]}</output><div class="rank-controls"><button type="button" data-stat="${s.id}" data-delta="-1" ${rank === 1 || (rank === 2 && reducedAlready) ? 'disabled' : ''} aria-label="Decrease ${s.name}">−</button><span>Rank ${rank}</span><button type="button" data-stat="${s.id}" data-delta="1" ${rank === 5 || (rank === 1 ? remaining < FALLOUT_RULES.reducedRankBonusXP : remaining < nextCost) ? 'disabled' : ''} aria-label="Increase ${s.name}">+</button></div></div>`;
-      }).join('')}</div><p class="luck-note">LCK is a separate Luck pool, not a characteristic purchased with XP. Starting maximum and current Luck: 5.</p>`;
+      }).join('')}<div class="special-build-row luck-build-row"><div><strong>LCK</strong><small>Luck</small></div><output class="special-score">${creation.luckMax}</output><div class="rank-controls luck-controls"></div></div></div>`;
   }
   document.getElementById('summary-origin').textContent = creation.origin;
   document.getElementById('summary-xp-spent').textContent = xpSpent();
   document.getElementById('summary-xp-remaining').textContent = remaining;
-  document.getElementById('summary-luck').textContent = `${creation.luckCurrent} / ${creation.luckMax}`;
+  document.getElementById('summary-caps').textContent = creation.caps.toLocaleString('en-US');
   document.getElementById('summary-name').textContent = creation.name || 'Unnamed Wastelander';
 }
 
