@@ -1,0 +1,2173 @@
+/* ================================================================
+   ASOIAF GENESYS CHARACTER BUILDER
+   ================================================================ */
+
+:root {
+    --page-bg: #eeeae1;
+    --panel-bg: #f8f5ee;
+    --panel-alt: #e5dfd2;
+
+    --text: #27241f;
+    --text-muted: #6b655c;
+
+    --border: #aaa18f;
+    --border-dark: #71695d;
+
+    --accent: #6d1f1f;
+    --accent-dark: #491414;
+
+    --disabled-bg: #d8d4cb;
+    --disabled-text: #99938a;
+
+    --radius: 4px;
+}
+
+
+/* ================================================================
+   BASE
+   ================================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    background: var(--page-bg);
+    color: var(--text);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    line-height: 1.45;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button,
+select,
+input[type="checkbox"],
+input[type="radio"] {
+    cursor: pointer;
+}
+
+button:disabled,
+select:disabled,
+input:disabled {
+    cursor: not-allowed;
+}
+
+
+/* ================================================================
+   PAGE
+   ================================================================ */
+
+#app {
+    width: min(1400px, 100%);
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.app-header {
+    margin-bottom: 18px;
+}
+
+.app-header h1 {
+    margin: 0 0 4px;
+}
+
+.app-header p {
+    margin: 0;
+
+    color: var(--text-muted);
+}
+
+.builder-layout {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        250px;
+
+    gap: 20px;
+    align-items: start;
+}
+
+.builder {
+    min-width: 0;
+}
+
+h1,
+h2,
+h3 {
+    margin-top: 0;
+}
+
+h1 {
+    margin-bottom: 18px;
+
+    font-size: 2rem;
+    font-weight: normal;
+
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+}
+
+h2 {
+    margin-bottom: 16px;
+
+    font-size: 1.5rem;
+    font-weight: normal;
+}
+
+h3 {
+    margin-top: 24px;
+    margin-bottom: 10px;
+
+    font-size: 1.1rem;
+}
+
+h4,
+h5 {
+    margin-top: 0;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+
+/* ================================================================
+   CHARACTER SUMMARY
+   ================================================================ */
+
+#character-summary {
+    position: sticky;
+    top: 20px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: var(--panel-bg);
+}
+
+#character-summary > * {
+    margin: 0;
+    padding: 10px 12px;
+}
+
+#character-summary h2 {
+    padding-bottom: 8px;
+
+    border-bottom: 2px solid var(--accent);
+}
+
+#character-summary hr {
+    height: 1px;
+
+    padding: 0;
+    margin: 4px 12px;
+
+    border: 0;
+    background: var(--border);
+}
+
+#character-summary strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: var(--text-muted);
+
+    font-size: 0.72rem;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+#character-summary span {
+    display: block;
+}
+
+#character-name input {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+
+/* ================================================================
+   CREATION NAVIGATION
+   ================================================================ */
+
+#creation-nav {
+    display: flex;
+    flex-wrap: wrap;
+
+    margin-bottom: 18px;
+
+    border-bottom: 2px solid var(--accent);
+}
+
+#creation-nav button {
+    padding: 9px 14px;
+
+    border: 1px solid var(--border);
+    border-bottom: none;
+
+    background: var(--panel-alt);
+    color: var(--text);
+}
+
+#creation-nav button + button {
+    border-left: none;
+}
+
+#creation-nav button:hover {
+    background: var(--panel-bg);
+}
+
+#creation-nav button.active {
+    background: var(--accent);
+    color: white;
+
+    border-color: var(--accent);
+}
+
+
+/* ================================================================
+   MAIN BUILDER PANEL
+   ================================================================ */
+
+#builder-content {
+    padding: 22px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: var(--panel-bg);
+}
+
+
+/* ================================================================
+   STANDARD FORM CONTROLS
+   ================================================================ */
+
+label {
+    display: block;
+}
+
+select,
+input[type="text"] {
+    width: 100%;
+    max-width: 420px;
+
+    margin-top: 4px;
+    margin-bottom: 16px;
+    padding: 8px 10px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: white;
+    color: var(--text);
+}
+
+select:focus,
+input[type="text"]:focus,
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+button {
+    padding: 7px 10px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: var(--panel-alt);
+    color: var(--text);
+}
+
+button:hover:not(:disabled) {
+    background: var(--accent);
+    color: white;
+
+    border-color: var(--accent);
+}
+
+button:disabled {
+    background: var(--disabled-bg);
+    color: var(--disabled-text);
+
+    border-color: var(--border);
+
+    opacity: 0.7;
+}
+
+
+/* ================================================================
+   CHARACTERISTICS
+   ================================================================ */
+
+.characteristics-list {
+    width: 100%;
+    max-width: 520px;
+
+    margin: 20px 0;
+}
+
+.characteristic-row {
+    display: grid;
+    grid-template-columns:
+        minmax(140px, 1fr)
+        42px
+        50px
+        42px;
+
+    align-items: center;
+
+    min-height: 48px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.characteristic-row:first-child {
+    border-top: 1px solid var(--border);
+}
+
+.characteristic-name {
+    font-weight: bold;
+}
+
+.characteristic-value {
+    text-align: center;
+
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.characteristic-increase,
+.characteristic-decrease {
+    width: 34px;
+    height: 34px;
+
+    margin: auto;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: var(--panel-alt);
+    color: var(--text);
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+.characteristic-increase:hover:not(:disabled),
+.characteristic-decrease:hover:not(:disabled) {
+    background: var(--accent);
+    color: white;
+
+    border-color: var(--accent);
+}
+
+.characteristic-increase:disabled,
+.characteristic-decrease:disabled {
+    background: var(--disabled-bg);
+    color: var(--disabled-text);
+
+    border-color: var(--border);
+
+    opacity: 0.65;
+}
+
+.characteristic-weakness-note {
+    color: var(--text-muted);
+}
+
+.characteristic-weakness-active {
+    width: fit-content;
+
+    padding: 6px 10px;
+
+    border-left: 3px solid var(--accent);
+
+    background: var(--panel-alt);
+}
+
+.xp-display {
+    margin: 6px 0;
+}
+
+
+/* ================================================================
+   THRESHOLD PROFILES
+   ================================================================ */
+
+.threshold-profiles {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(160px, 1fr));
+
+    gap: 10px;
+
+    max-width: 720px;
+}
+
+.threshold-option {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 8px;
+    align-items: start;
+
+    padding: 12px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+.threshold-option input {
+    grid-row: 1 / 3;
+
+    margin-top: 4px;
+}
+
+.threshold-option strong {
+    display: block;
+}
+
+.threshold-option span {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+
+/* ================================================================
+   CAREER
+   ================================================================ */
+
+.career-skill-list {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(180px, 1fr));
+
+    gap: 4px 24px;
+
+    max-width: 700px;
+
+    padding-left: 22px;
+}
+
+.career-skill-list span {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+
+/* ================================================================
+   BACKGROUND
+   ================================================================ */
+
+.background-skill-list {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(220px, 1fr));
+
+    gap: 18px;
+
+    max-width: 850px;
+}
+
+.background-skill-group {
+    padding: 14px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+.background-skill-group h3 {
+    margin-top: 0;
+
+    padding-bottom: 5px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.background-skill {
+    display: grid;
+    grid-template-columns:
+        22px
+        minmax(120px, 1fr)
+        auto;
+
+    align-items: center;
+
+    min-height: 34px;
+
+    padding: 3px 0;
+}
+
+.background-skill input {
+    margin: 0;
+}
+
+.background-skill small {
+    color: var(--text-muted);
+}
+
+.background-skill:has(input:disabled) {
+    color: var(--disabled-text);
+}
+
+.background-skill:has(input:disabled) small {
+    color: var(--disabled-text);
+}
+
+
+/* ================================================================
+   OBLIGATION
+   ================================================================ */
+.obligation-assignment-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: end;
+
+    margin-top: 20px;
+    margin-bottom: 12px;
+}
+
+.obligation-assignment-header h3 {
+    margin: 0 0 4px;
+}
+
+.obligation-assignment-header p {
+    margin: 0;
+
+    color: var(--text-muted);
+}
+
+#obligation-entry-list {
+    display: grid;
+    gap: 12px;
+}
+
+.obligation-entry {
+    margin-bottom: 12px;
+    padding: 14px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+.obligation-entry-top {
+    display: grid;
+    grid-template-columns:
+        minmax(180px, 1fr)
+        100px;
+
+    gap: 12px;
+}
+
+.obligation-entry select,
+.obligation-entry input,
+.obligation-entry textarea {
+    width: 100%;
+    max-width: none;
+
+    margin-top: 4px;
+    margin-bottom: 12px;
+
+    padding: 8px 10px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: white;
+    color: var(--text);
+
+    font: inherit;
+}
+
+.obligation-entry textarea {
+    resize: vertical;
+
+    min-height: 80px;
+}
+
+.obligation-warning {
+    margin-top: 14px;
+    padding: 8px 10px;
+
+    border-left: 3px solid var(--accent);
+
+    background: var(--panel-alt);
+
+    font-weight: bold;
+}
+
+.obligation-complete {
+    margin-top: 14px;
+
+    color: var(--text-muted);
+}
+
+.obligation-empty {
+    padding: 14px;
+
+    border: 1px dashed var(--border);
+
+    color: var(--text-muted);
+}
+
+.obligation-step {
+    max-width: 850px;
+}
+
+.obligation-summary {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(120px, 1fr));
+
+    gap: 1px;
+
+    margin-bottom: 18px;
+
+    border: 1px solid var(--border);
+    background: var(--border);
+}
+
+.obligation-summary > * {
+    margin: 0;
+    padding: 10px 12px;
+
+    background: var(--panel-alt);
+}
+
+.solo-character-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 16px;
+}
+
+.obligation-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    margin-bottom: 16px;
+}
+
+.obligation-choice-list {
+    display: grid;
+    gap: 8px;
+
+    margin-bottom: 16px;
+}
+
+.obligation-choice {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+
+    padding: 10px 12px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+
+/* ================================================================
+   SKILLS
+   ================================================================ */
+
+.skills-step {
+    max-width: 100%;
+}
+
+.skills-list,
+.skill-list {
+    display: grid;
+    gap: 4px;
+}
+
+.skill-row {
+    display: grid;
+    grid-template-columns:
+        minmax(150px, 1.5fr)
+        minmax(90px, 0.8fr)
+        45px
+        42px
+        42px;
+
+    align-items: center;
+
+    min-height: 42px;
+
+    padding: 4px 8px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.skill-row:first-child {
+    border-top: 1px solid var(--border);
+}
+
+.skill-row:nth-child(even) {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.skill-name {
+    font-weight: bold;
+}
+
+.skill-characteristic {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.skill-rank {
+    text-align: center;
+    font-weight: bold;
+}
+
+.skill-increase,
+.skill-decrease {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+}
+
+
+/* ================================================================
+   TALENTS
+   ================================================================ */
+
+.talents-step {
+    max-width: 100%;
+}
+
+
+/* ---------------------------------------------------------------
+   Talent pyramid
+   --------------------------------------------------------------- */
+
+.talent-pyramid-summary {
+    display: grid;
+    grid-template-columns:
+        repeat(5, minmax(110px, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 24px;
+}
+
+.talent-pyramid-tier {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    min-width: 0;
+}
+
+.talent-pyramid-tier h3 {
+    margin: 0 0 2px;
+    padding-bottom: 5px;
+
+    text-align: center;
+
+    border-bottom: 2px solid var(--accent);
+}
+
+.talent-pyramid-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 36px;
+    min-width: 0;
+
+    padding: 7px 8px;
+
+    text-align: center;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    font-size: clamp(0.72rem, 1vw, 0.95rem);
+    line-height: 1.15;
+
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+.talent-pyramid-slot-filled {
+    background: #b8ffba;
+
+    font-weight: bold;
+}
+
+.talent-pyramid-slot-empty {
+    background: white;
+
+    border-style: dashed;
+}
+
+
+/* ---------------------------------------------------------------
+   Collapsible talent tiers
+   --------------------------------------------------------------- */
+
+.talent-tier {
+    margin-bottom: 14px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: var(--panel-bg);
+
+    overflow: hidden;
+}
+
+.talent-tier-summary {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 10px 12px;
+
+    cursor: pointer;
+
+    background: var(--panel-alt);
+
+    font-size: 1.1rem;
+    font-weight: bold;
+
+    user-select: none;
+}
+
+.talent-tier-summary:hover {
+    background: var(--panel-bg);
+}
+
+.talent-tier[open] > .talent-tier-summary {
+    border-bottom: 1px solid var(--accent);
+}
+
+.talent-tier-summary::marker {
+    color: var(--accent);
+}
+
+.talent-tier-count {
+    color: var(--text-muted);
+
+    font-size: 0.9rem;
+    font-weight: normal;
+}
+
+
+/* ---------------------------------------------------------------
+   Talent card grid
+   --------------------------------------------------------------- */
+
+.talent-list {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 12px;
+
+    padding: 12px;
+
+    align-items: stretch;
+}
+
+
+/* ---------------------------------------------------------------
+   Talent cards
+   --------------------------------------------------------------- */
+
+.talent-card {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    padding: 14px;
+
+    background: white;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.talent-card h3,
+.talent-card h4,
+.talent-card h5 {
+    margin-top: 0;
+}
+
+.talent-browser-card-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: baseline;
+
+    gap: 12px;
+
+    margin-bottom: 8px;
+}
+
+.talent-browser-card-header h3 {
+    margin: 0;
+}
+
+.talent-browser-tier-label {
+    flex-shrink: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.talent-browser-meta {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 6px 12px;
+
+    margin-bottom: 8px;
+
+    color: var(--text-muted);
+
+    font-size: 0.9rem;
+}
+
+.talent-browser-prerequisites {
+    margin-bottom: 8px;
+
+    font-size: 0.9rem;
+}
+
+.talent-browser-description {
+    margin: 0;
+
+    font-size: 0.9rem;
+}
+
+
+/* ---------------------------------------------------------------
+   Purchase / refund controls
+   --------------------------------------------------------------- */
+
+.talent-controls {
+    display: flex;
+
+    gap: 6px;
+    align-items: center;
+
+    margin-top: auto;
+    padding-top: 12px;
+
+    border-top: 1px solid var(--border);
+}
+
+.talent-controls button {
+    min-width: 34px;
+}
+
+.talent-card.talent-card-purchased {
+    background: #b8ffba;
+}
+
+
+/* ---------------------------------------------------------------
+   Responsive talent layout
+   --------------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+    .talent-list {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 800px) {
+    .talent-pyramid-summary {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .talent-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 500px) {
+    .talent-pyramid-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ================================================================
+   EQUIPMENT
+   ================================================================ */
+
+.equipment-step {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        280px;
+
+    grid-template-areas:
+        "title title"
+        "summary summary"
+        "package armor"
+        "catalog inventory";
+
+    gap: 18px;
+    align-items: start;
+}
+
+.equipment-step > h2 {
+    grid-area: title;
+
+    margin-bottom: 0;
+}
+/* ------------------------------------------------
+   COLLAPSIBLE EQUIPMENT SECTIONS
+   ------------------------------------------------ */
+
+.equipment-step details {
+    width: 100%;
+}
+
+.equipment-step summary {
+    padding: 10px 12px;
+
+    cursor: pointer;
+
+    border-bottom: 1px solid var(--border);
+
+    background: var(--panel-alt);
+
+    font-weight: bold;
+
+    user-select: none;
+}
+
+.equipment-step summary:hover {
+    background: var(--panel-bg);
+}
+
+.equipment-step details[open] > summary {
+    border-bottom-color: var(--accent);
+}
+
+.equipment-section-content {
+    padding: 12px;
+}
+
+#starting-package-section,
+#equipped-armor-section,
+#equipment-inventory-section {
+    padding: 0;
+}
+
+#starting-package-section > details,
+#equipped-armor-section > details,
+#equipment-inventory-section > details {
+    overflow: hidden;
+
+    border-radius: var(--radius);
+}
+
+.equipment-catalog-category {
+    margin-bottom: 10px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+
+    overflow: hidden;
+}
+
+.equipment-catalog-category > summary {
+    font-size: 1.05rem;
+}
+
+.equipment-catalog-category > .equipment-section-content {
+    padding-top: 4px;
+}
+
+/* ------------------------------------------------
+   EQUIPMENT SUMMARY
+   ------------------------------------------------ */
+
+.equipment-summary {
+    grid-area: summary;
+
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(120px, 1fr));
+
+    gap: 1px;
+
+    border: 1px solid var(--border);
+    background: var(--border);
+}
+
+.equipment-summary p {
+    margin: 0;
+    padding: 8px 10px;
+
+    background: var(--panel-alt);
+}
+
+.equipment-summary strong {
+    display: block;
+
+    color: var(--text-muted);
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+
+/* ------------------------------------------------
+   STARTING PACKAGE
+   ------------------------------------------------ */
+
+#starting-package-section {
+    grid-area: package;
+
+    padding: 14px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+#starting-package-section h3,
+#starting-package-section h4 {
+    margin-top: 0;
+}
+
+#starting-package-section ul {
+    margin: 10px 0 14px;
+    padding-left: 22px;
+}
+
+
+/* ------------------------------------------------
+   EQUIPPED ARMOR
+   ------------------------------------------------ */
+
+#equipped-armor-section {
+    grid-area: armor;
+
+    padding: 14px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+#equipped-armor-section h3 {
+    margin-top: 0;
+}
+
+#equipped-armor-section select {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+
+/* ------------------------------------------------
+   INVENTORY
+   ------------------------------------------------ */
+
+#equipment-inventory-section {
+    grid-area: inventory;
+
+    position: sticky;
+    top: 20px;
+
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+
+    padding: 14px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: var(--panel-alt);
+}
+
+#equipment-inventory-section h3 {
+    margin-top: 0;
+}
+
+.equipment-inventory {
+    display: grid;
+    gap: 8px;
+}
+
+.equipment-inventory-row {
+    padding: 10px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+.equipment-inventory-name {
+    margin-bottom: 4px;
+}
+
+.equipment-inventory-details {
+    margin-bottom: 8px;
+
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.equipment-inventory-row label {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+
+    margin-right: 8px;
+    margin-bottom: 8px;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.85rem;
+}
+
+.equipment-inventory-row button {
+    width: 100%;
+}
+
+
+/* ------------------------------------------------
+   CATALOG
+   ------------------------------------------------ */
+
+#equipment-catalog-section {
+    grid-area: catalog;
+
+    min-width: 0;
+}
+
+#equipment-catalog-section > h3 {
+    margin-top: 0;
+}
+
+.equipment-catalog-category {
+    margin-bottom: 24px;
+}
+
+.equipment-catalog-category > h5 {
+    margin: 18px 0 8px;
+
+    color: var(--text-muted);
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.equipment-catalog-card {
+    display: grid;
+    grid-template-columns:
+        minmax(140px, 1.1fr)
+        minmax(200px, 2fr)
+        auto;
+
+    column-gap: 12px;
+    row-gap: 4px;
+    align-items: center;
+
+    padding: 8px 10px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.equipment-catalog-card:first-of-type {
+    border-top: 1px solid var(--border);
+}
+
+.equipment-catalog-card h5 {
+    margin: 0;
+
+    font-size: 1rem;
+}
+
+.equipment-catalog-card p {
+    margin: 0;
+
+    font-size: 0.85rem;
+}
+
+.equipment-catalog-card p:nth-of-type(2),
+.equipment-catalog-card p:nth-of-type(3) {
+    color: var(--text-muted);
+}
+
+.equipment-catalog-card button {
+    grid-column: 3;
+    grid-row: 1 / span 4;
+
+    min-width: 64px;
+}
+
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 1100px) {
+
+    .builder-layout {
+        grid-template-columns:
+            minmax(0, 1fr)
+            220px;
+    }
+
+    .equipment-step {
+        grid-template-columns:
+            minmax(0, 1fr)
+            240px;
+    }
+
+    .equipment-catalog-card {
+        grid-template-columns:
+            minmax(120px, 1fr)
+            minmax(160px, 1.5fr)
+            auto;
+    }
+}
+
+
+@media (max-width: 1000px) {
+
+    .equipment-step {
+        grid-template-columns: 1fr;
+
+        grid-template-areas:
+            "title"
+            "summary"
+            "package"
+            "armor"
+            "inventory"
+            "catalog";
+    }
+
+    .equipment-summary {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    #equipment-inventory-section {
+        position: static;
+
+        max-height: none;
+    }
+
+    .equipment-catalog-card {
+        grid-template-columns:
+            minmax(140px, 1fr)
+            minmax(180px, 2fr)
+            auto;
+    }
+}
+
+
+@media (max-width: 850px) {
+
+    .builder-layout {
+        grid-template-columns: 1fr;
+    }
+
+    #character-summary {
+        position: static;
+
+        display: grid;
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        grid-row: 1;
+    }
+
+    .builder {
+        grid-row: 2;
+    }
+
+    #character-summary h2,
+    #character-name {
+        grid-column: 1 / -1;
+    }
+
+    #character-summary hr {
+        display: none;
+    }
+
+    .threshold-profiles {
+        grid-template-columns: 1fr;
+    }
+
+    .background-skill-list {
+        grid-template-columns: 1fr;
+    }
+
+
+    .equipment-step {
+        grid-template-columns: 1fr;
+
+        grid-template-areas:
+            "title"
+            "summary"
+            "package"
+            "armor"
+            "inventory"
+            "catalog";
+    }
+
+    .equipment-summary {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    #equipment-inventory-section {
+        position: static;
+
+        max-height: none;
+    }
+}
+
+
+@media (max-width: 560px) {
+
+    #app {
+        padding: 10px;
+    }
+
+    #builder-content {
+        padding: 15px;
+    }
+
+    #character-summary {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    #creation-nav {
+        display: grid;
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    #creation-nav button,
+    #creation-nav button + button {
+        border: 1px solid var(--border);
+    }
+
+    .characteristic-row {
+        grid-template-columns:
+            minmax(100px, 1fr)
+            38px
+            42px
+            38px;
+    }
+
+    .career-skill-list {
+        grid-template-columns: 1fr;
+    }
+
+    .obligation-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .skill-row {
+        grid-template-columns:
+            minmax(120px, 1fr)
+            42px
+            36px
+            36px;
+    }
+
+    .skill-characteristic {
+        display: none;
+    }
+
+
+    .talent-controls {
+        justify-content: flex-start;
+    }
+
+    .equipment-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .equipment-catalog-card {
+        grid-template-columns: 1fr;
+        gap: 5px;
+
+        padding: 12px 8px;
+    }
+
+    .equipment-catalog-card button {
+        grid-column: 1;
+        grid-row: auto;
+
+        width: 100%;
+        margin-top: 6px;
+    }
+
+   .obligation-assignment-header {
+          display: block;
+      }
+      
+      .obligation-assignment-header button {
+          width: 100%;
+          margin-top: 10px;
+      }
+      
+      .obligation-entry-top {
+          grid-template-columns: 1fr;
+      }
+}
+
+/* ============================================================
+   TALENT BROWSER
+   ============================================================ */
+
+.browser-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.browser-header h1 {
+    margin-bottom: 6px;
+}
+
+.browser-header p {
+    margin: 0;
+    color: var(--text-muted);
+}
+
+
+/* ------------------------------------------------------------
+   FILTERS
+   ------------------------------------------------------------ */
+
+.talent-browser-controls {
+    display: grid;
+    grid-template-columns:
+        minmax(240px, 2fr)
+        minmax(120px, 0.7fr)
+        minmax(220px, 1.3fr)
+        minmax(140px, 0.8fr);
+    gap: 12px;
+    align-items: end;
+
+    padding: 16px;
+    margin-bottom: 10px;
+
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.talent-browser-controls label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.talent-browser-controls label > span {
+    font-weight: bold;
+}
+
+.talent-browser-controls input,
+.talent-browser-controls select {
+    width: 100%;
+    max-width: none;
+    height: 40px;
+
+    margin: 0;
+    padding: 8px 10px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: white;
+    color: var(--text);
+    font: inherit;
+}
+
+
+/* ------------------------------------------------------------
+   RESULTS SUMMARY
+   ------------------------------------------------------------ */
+
+.talent-browser-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 24px;
+}
+
+#talent-result-count {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+#talent-clear-filters {
+    padding: 6px 10px;
+}
+
+
+/* ------------------------------------------------------------
+   TIERS
+   ------------------------------------------------------------ */
+
+.talent-browser-tier {
+    margin-bottom: 32px;
+}
+
+.talent-browser-tier > h2 {
+    margin: 0 0 12px;
+    padding-bottom: 6px;
+
+    border-bottom: 2px solid var(--border-dark);
+}
+
+
+/* ------------------------------------------------------------
+   TALENT GRID
+   ------------------------------------------------------------ */
+
+.talent-browser-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(300px, 1fr)
+        );
+    gap: 12px;
+}
+
+
+/* ------------------------------------------------------------
+   TALENT CARDS
+   ------------------------------------------------------------ */
+
+.talent-browser-card {
+    display: flex;
+    flex-direction: column;
+
+    padding: 14px 16px;
+
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.talent-browser-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+
+    margin-bottom: 8px;
+}
+
+.talent-browser-card-header h3 {
+    margin: 0;
+    line-height: 1.2;
+}
+
+.talent-browser-tier-label {
+    flex: 0 0 auto;
+
+    padding: 3px 7px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: var(--panel-alt);
+
+    font-size: 0.8rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+
+/* ------------------------------------------------------------
+   TALENT METADATA
+   ------------------------------------------------------------ */
+
+.talent-browser-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+
+    margin-bottom: 10px;
+
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.talent-browser-meta span + span {
+    padding-left: 14px;
+    border-left: 1px solid var(--border);
+}
+
+
+/* ------------------------------------------------------------
+   PREREQUISITES
+   ------------------------------------------------------------ */
+
+.talent-browser-prerequisites {
+    margin-bottom: 8px;
+
+    font-size: 0.9rem;
+}
+
+
+/* ------------------------------------------------------------
+   DESCRIPTION
+   ------------------------------------------------------------ */
+
+.talent-browser-description {
+    margin: 0;
+
+    line-height: 1.45;
+}
+
+
+/* ------------------------------------------------------------
+   EMPTY RESULTS
+   ------------------------------------------------------------ */
+
+.talent-browser-empty {
+    padding: 24px;
+
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+
+    color: var(--text-muted);
+    text-align: center;
+}
+
+
+/* ============================================================
+   TALENT BROWSER — RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1000px) {
+
+    .talent-browser-controls {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .browser-header {
+        display: block;
+    }
+
+    .talent-browser-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .talent-browser-summary {
+        align-items: flex-start;
+    }
+
+    .talent-browser-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .talent-browser-card-header {
+        gap: 8px;
+    }
+
+}
+
+
+/* ================================================================
+   EQUIPMENT BROWSER
+   ================================================================ */
+
+.equipment-browser {
+    width: 100%;
+}
+
+
+/* ------------------------------------------------
+   FILTERS
+   ------------------------------------------------ */
+
+.equipment-browser-controls {
+    display: grid;
+    grid-template-columns:
+        minmax(240px, 2fr)
+        minmax(180px, 1fr);
+
+    gap: 12px;
+    align-items: end;
+
+    padding: 16px;
+    margin-bottom: 10px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: var(--panel-alt);
+}
+
+.equipment-browser-controls label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.equipment-browser-controls label > span {
+    font-weight: bold;
+}
+
+.equipment-browser-controls input,
+.equipment-browser-controls select {
+    width: 100%;
+    max-width: none;
+    height: 40px;
+
+    margin: 0;
+    padding: 8px 10px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: white;
+    color: var(--text);
+
+    font: inherit;
+}
+
+
+/* ------------------------------------------------
+   RESULTS SUMMARY
+   ------------------------------------------------ */
+
+.equipment-browser-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 24px;
+}
+
+#equipment-result-count {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+#equipment-clear-filters {
+    padding: 6px 10px;
+}
+
+
+/* ------------------------------------------------
+   CATEGORY SECTIONS
+   ------------------------------------------------ */
+
+.equipment-browser-category {
+    margin-bottom: 32px;
+}
+
+.equipment-browser-category > h2 {
+    margin: 0 0 12px;
+    padding-bottom: 6px;
+
+    border-bottom: 2px solid var(--border-dark);
+}
+
+
+/* ------------------------------------------------
+   TABLES
+   ------------------------------------------------ */
+
+.equipment-browser-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+.equipment-browser-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 0.9rem;
+}
+
+.equipment-browser-table th {
+    padding: 8px 10px;
+
+    border-bottom: 2px solid var(--border-dark);
+
+    background: var(--panel-alt);
+
+    text-align: left;
+    white-space: nowrap;
+}
+
+.equipment-browser-table td {
+    padding: 8px 10px;
+
+    border-bottom: 1px solid var(--border);
+
+    vertical-align: top;
+}
+
+.equipment-browser-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.equipment-browser-table tbody tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.equipment-browser-table tbody tr:hover {
+    background: var(--panel-bg);
+}
+
+.equipment-browser-name {
+    min-width: 130px;
+
+    font-weight: bold;
+}
+
+.equipment-browser-table th:last-child,
+.equipment-browser-table td:last-child {
+    min-width: 220px;
+}
+
+
+/* ------------------------------------------------
+   CARDS
+   ------------------------------------------------ */
+
+.equipment-browser-card-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(300px, 1fr)
+        );
+
+    gap: 12px;
+}
+
+.equipment-browser-card {
+    padding: 14px 16px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+.equipment-browser-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+
+    margin-bottom: 10px;
+}
+
+.equipment-browser-card-header h3 {
+    margin: 0;
+
+    line-height: 1.2;
+}
+
+.equipment-browser-price {
+    flex: 0 0 auto;
+
+    padding: 3px 7px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: var(--panel-alt);
+
+    font-size: 0.85rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+
+/* ------------------------------------------------
+   CARD STATS
+   ------------------------------------------------ */
+
+.equipment-browser-stat-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+
+    margin-bottom: 10px;
+
+    font-size: 0.9rem;
+}
+
+.equipment-browser-stat-line > span {
+    white-space: nowrap;
+}
+
+.equipment-browser-object-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 14px;
+
+    margin-bottom: 10px;
+    padding: 8px 10px;
+
+    border: 1px solid var(--border);
+
+    background: var(--panel-alt);
+
+    font-size: 0.9rem;
+}
+
+.equipment-browser-object-stats > strong {
+    width: 100%;
+}
+
+.equipment-browser-object-stats > span {
+    white-space: nowrap;
+}
+
+
+/* ------------------------------------------------
+   DESCRIPTION
+   ------------------------------------------------ */
+
+.equipment-browser-description {
+    margin: 0;
+
+    line-height: 1.45;
+}
+
+
+/* ------------------------------------------------
+   EMPTY RESULTS
+   ------------------------------------------------ */
+
+.equipment-browser-empty {
+    padding: 24px;
+
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+
+    color: var(--text-muted);
+    text-align: center;
+}
+
+
+/* ================================================================
+   EQUIPMENT BROWSER — RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 850px) {
+
+    .equipment-browser-controls {
+        grid-template-columns: 1fr 1fr;
+    }
+
+}
+
+
+@media (max-width: 560px) {
+
+    .equipment-browser-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .equipment-browser-summary {
+        align-items: flex-start;
+    }
+
+    .equipment-browser-card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .equipment-browser-card-header {
+        gap: 8px;
+    }
+
+}
+
+/* REPORT */
+.summary-report-control {
+    margin-top: 16px;
+    padding-top: 12px;
+
+    border-top: 1px solid var(--border);
+}
+
+.summary-report-control button {
+    width: 100%;
+}

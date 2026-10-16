@@ -1,0 +1,9 @@
+id,name,subtype,defense,soak,encumbrance,hardPoints,price,rarity,qualities,effect
+gambeson,Gambeson,personal,0,1,1,1,50,2,,"A quilted coat of layered linen or wool, worn alone or beneath heavier armor."
+brigandine,Brigandine,personal,1,1,3,2,275,3,,Small overlapping metal plates riveted beneath a fitted coat of stout fabric or leather.
+mail,Mail,personal,0,2,3,2,450,3,,A flexible shirt of interlinked iron rings that protects against cuts and thrusts.
+half-plate,Half Plate,personal,1,2,4,2,900,5,,A mixed harness of shaped steel plates and lighter protection at the joints and limbs.
+plate,Plate,personal,1,4,5,3,3000,6,,"A full articulated harness of fitted steel plates, made for a wealthy and well-equipped warrior."
+padded-barding,Padded Barding,barding,0,1,4,3,100,,,Quilted cloth coverings protect a mount from glancing blows without burdening it with metal.
+mail-barding,Mail Barding,barding,0,2,6,,500,5,,"Linked iron rings drape a mount’s vulnerable body, often over a padded underlayer."
+plate-barding,Plate Barding,barding,1,3,8,,1500,6,,"Shaped steel plates shield a warhorse’s head and body, an imposing battlefield sight."

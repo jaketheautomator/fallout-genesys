@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Equipment Browser</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+</head>
+
+<body>
+
+    <div id="app">
+
+        <header class="browser-header">
+            <div>
+                <h1>Equipment Browser</h1>
+
+                <p>
+                    Browse equipment available in the
+                    A Song of Ice and Fire Genesys hack.
+                </p>
+            </div>
+        </header>
+
+
+        <main class="equipment-browser">
+
+            <section class="equipment-browser-controls">
+
+                <label class="equipment-search">
+                    <span>Search</span>
+
+                    <input
+                        id="equipment-search"
+                        type="search"
+                        placeholder="Search equipment..."
+                        autocomplete="off"
+                    >
+                </label>
+
+
+                <label>
+                    <span>Category</span>
+
+                    <select id="equipment-category-filter">
+                        <option value="all">
+                            All Categories
+                        </option>
+
+                        <option value="weapon">
+                            Weapons
+                        </option>
+
+                        <option value="armor">
+                            Armor
+                        </option>
+
+                        <option value="gear">
+                            General Gear
+                        </option>
+
+                        <option value="mount">
+                            Mounts
+                        </option>
+
+                        <option value="vehicle">
+                            Vehicles
+                        </option>
+
+                        <option value="attachment">
+                            Attachments
+                        </option>
+                    </select>
+                </label>
+
+            </section>
+
+
+            <section class="equipment-browser-summary">
+
+                <span id="equipment-result-count"></span>
+
+                <button
+                    id="equipment-clear-filters"
+                    type="button"
+                >
+                    Clear Filters
+                </button>
+
+            </section>
+
+
+            <section
+                id="equipment-browser-results"
+                class="equipment-browser-results"
+            >
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="js/data.js"></script>
+    <script src="js/equipment-data.js"></script>
+    <script src="js/talent-data.js"></script>
+    <script src="js/equipment.js"></script>
+
+</body>
+</html>

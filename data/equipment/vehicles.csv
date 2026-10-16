@@ -1,0 +1,5 @@
+id,name,encumbrance,price,rarity,effect
+cart,Cart,,150,1,"A simple two-wheeled vehicle drawn by a horse, mule, or ox, commonly used by farmers and merchants to transport goods over short distances."
+wagon,Wagon,,200,3,"A sturdy four-wheeled vehicle drawn by one or more draft animals, capable of carrying substantial cargo and passengers along the roads of the realm."
+carriage,Carriage,,1500,5,"A covered four-wheeled passenger vehicle drawn by horses, fitted with enclosed seating and furnishings that offer greater comfort and protection from the elements."
+rowboat,Rowboat,,150,4,"A small open wooden boat propelled by oars, suited to crossing rivers, navigating calm waterways, and carrying a handful of passengers or modest cargo."

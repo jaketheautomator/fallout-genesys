@@ -1,0 +1,40 @@
+id,name,subtype,encumbrance,price,rarity,effect
+backpack,Backpack,general,0,50,0,A sturdy canvas or leather pack with straps for carrying provisions and traveling equipment. Increases the character's Encumbrance Threshold by 4. Adds 2 Setback dice to checks in combat.
+bedroll,Bedroll,general,1,15,0,A compact bundle of bedding tied for easy carriage on the road.
+blanket,Blanket,general,1,5,0,A heavy woolen covering useful for warmth at camp or on the march.
+small-tent,Small Tent,general,3,30,2,A simple canvas shelter suitable for one or two travelers.
+large-tent,Large Tent,general,5,75,4,A roomy canvas pavilion that shelters a small group and its belongings.
+waterskin,Waterskin,general,0.5,5,0,A stitched leather vessel for carrying drinking water or other liquids. Encumbrance listed assumes the waterskin is full.
+rope,Rope,general,1,5,1,"A coil of stout hemp rope useful for hauling, climbing, and securing loads."
+grappling-hook,Grappling Hook,tool,1,10,3,"An iron hook with several prongs, made to catch on ledges, walls, or railings."
+flint-and-steel,Flint and Steel,tool,0,10,1,A striker and sharp flint used with tinder to kindle a fire.
+torches,Torches (3),general,1,3,0,Pitch-soaked wooden brands that provide a portable but short-lived flame.
+lantern,Lantern,general,1,50,4,A hooded metal lamp that protects its flame from wind and directs its light.
+lamp-oil,Lamp Oil,general,0,2,5,A small supply of combustible oil for keeping lamps and lanterns alight.
+rations,"Rations, One Day",general,0,2,0,"Dried meat, hard bread, and other preserved food sufficient for one day of travel."
+cooking-kit,Cooking Kit,tool,2,15,1,"A portable assortment of pots, utensils, and implements for preparing meals over a fire."
+winter-clothing,Winter Clothing,general,1,100,3,"Thick wool, fur, and layered garments intended for travel through bitter weather. When worn, removes up to 2 Setback dice from Survival or Resilience checks caused by cold weather."
+apothecary-kit,Apothecary Kit,tool,2,150,6,"A case of herbs, salves, powders, and small instruments used to prepare remedies."
+healers-kit,Healer's Kit,tool,2,100,3,"Bandages, needles, splints, and basic implements for treating wounds in the field."
+thieves-tools,Thieves' Tools,tool,1,75,5,"Fine picks, probes, and tension tools for working delicate locks and mechanisms."
+climbing-gear,Climbing Gear,tool,1,20,3,"Ropes, straps, hooks, and other equipment for negotiating steep or sheer surfaces."
+hunting-fishing-kit,Hunting & Fishing Kit,tool,2,40,2,"Snares, lines, hooks, and dressing tools for gathering food from the wild."
+navigation-instruments,Navigation Instruments,tool,1,100,6,"A collection of charts, measuring tools, and directional aids for finding a route."
+writing-kit,Writing Kit,tool,1,50,4,"Quills, ink, parchment, and small accessories for correspondence and recordkeeping."
+crowbar,Crowbar,tool,1,10,2,"A heavy iron lever for prying open doors, crates, and stubborn fittings."
+shovel,Shovel,tool,2,10,1,An iron-bladed digging tool with a sturdy wooden handle.
+hammer-pitons,Hammer & Pitons,tool,1,10,3,A small hammer and iron spikes for securing ropes to rock or masonry.
+basic-tack,Bridle & Basic Tack,tack,1,20,1,"A bridle, reins, and simple fittings for leading and controlling a mount."
+riding-saddle,Riding Saddle,tack,3,50,3,A fitted leather seat that makes long journeys on horseback more secure and comfortable.
+war-saddle,War Saddle,tack,4,150,5,"A high-pommeled, reinforced saddle built to keep a rider steady in the violence of combat."
+saddlebags,Saddlebags,tack,2,25,1,Paired leather bags that hang beside a saddle to carry supplies.
+pack-saddle,Pack Saddle,tack,4,40,4,A wooden or leather-framed rig designed to balance cargo across a beast of burden.
+horseshoes,Horseshoes,tack,0,10,1,Iron shoes nailed to a horse’s hooves to protect them on hard and stony roads.
+lodging-common,Lodging (Common Room),service,0,2,3,"A night's shelter in the shared quarters of an inn or tavern, usually with a place by the hearth and a straw pallet or space on the floor."
+lodging-private,Lodging (Private Room),service,0,10,5,"A private chamber at an inn, furnished with a bed, washbasin, and a door that can be closed against unwanted company."
+porter,Porter (daily),service,0,1,1,"A hired laborer who carries baggage, hauls supplies, and performs other physically demanding tasks throughout a day's travel."
+torchbearer,Torchbearer (daily),service,0,2,1,"A hired attendant who carries a torch or lantern, keeping the way illuminated while their employer's hands remain free."
+guide,Guide (daily),service,0,5,3,"A local familiar with the roads, trails, settlements, and hazards of a particular region, hired to lead travelers safely through unfamiliar country."
+travel-riverboat,Travel by Riverboat (daily),service,0,10,2,"Passage aboard a riverboat carrying passengers and cargo along the waterways of the Seven Kingdoms, subject to currents, weather, and the river's course."
+travel-wagon,Travel by Wagon (daily),service,0,4,1,"Passage aboard a horse- or mule-drawn wagon traveling the roads and tracks of the realm, with limited comfort among its cargo and fellow passengers."
+travel-carriage,Travel by Carriage (daily),service,0,25,5,"Passage in a covered, horse-drawn carriage offering cushioned seating and shelter from the elements, favored by wealthy travelers and those of noble birth."

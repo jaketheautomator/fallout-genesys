@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ASOIAF Genesys Character Builder</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <main id="app">
+
+        <header class="app-header">
+            <h1>A Song of Ice and Fire</h1>
+            <p>Genesys Character Builder</p>
+        </header>
+
+        <div class="builder-layout">
+
+            <section class="builder">
+
+                <nav id="creation-nav">
+                    <button data-step="characteristics">Characteristics</button>
+                    <button data-step="career">Career</button>
+                    <button data-step="background">Background</button>
+                    <button data-step="obligation">Obligation</button>
+                    <button data-step="skills">Skills</button>
+                    <button data-step="talents">Talents</button>
+                    <button data-step="equipment">Equipment</button>
+                </nav>
+
+                <section id="builder-content">
+                    <!-- Character creation interface is rendered here -->
+                </section>
+
+            </section>
+
+            <aside id="character-summary">
+
+                <h2>Character</h2>
+
+                <div id="character-name">
+                    <label for="name">Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Character Name"
+                    >
+                </div>
+
+                <hr>
+
+                <div id="summary-background">
+                    <strong>Background:</strong>
+                    <span>—</span>
+                </div>
+
+                <div id="summary-career">
+                    <strong>Career:</strong>
+                    <span>—</span>
+                </div>
+
+                <div id="summary-specialization">
+                    <strong>Specialization:</strong>
+                    <span>—</span>
+                </div>
+
+                <hr>
+
+                <div id="summary-xp">
+                    <strong>XP Remaining:</strong>
+                    <span>110</span>
+                </div>
+
+                <div id="summary-obligation">
+                    <strong>Obligation:</strong>
+                    <span>10</span>
+                </div>
+
+                <div id="summary-wealth">
+                    <strong>Silver Stags:</strong>
+                    <span>1,000</span>
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+    <script src="js/data.js"></script>
+    <script src="js/equipment-data.js"></script>
+    <script src="js/talent-data.js"></script>
+    <script src="js/character.js"></script>
+    <script src="js/report.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
