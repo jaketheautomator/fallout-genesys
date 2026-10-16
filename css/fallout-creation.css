@@ -24,11 +24,11 @@ body {font-family:Arial,sans-serif;}
 /* Luck appears as the seventh SPECIAL value without rank controls. */
 .luck-build-row .luck-controls { visibility:hidden; }
 
-/* Skills: aligned section headers and tightly grouped tag choices. */
+/* Three aligned zones: left skill, centered radio cluster, right rank/purchase. */
 .skill-pick-grid {
   display:grid;
-  grid-template-columns:minmax(105px,1fr) 32px 38px repeat(3,48px) 20px 84px;
-  column-gap:5px;
+  grid-template-columns:minmax(115px,1fr) minmax(150px,1fr) minmax(132px,1fr);
+  column-gap:12px;
   align-items:center;
 }
 .skill-group-header {
@@ -37,41 +37,41 @@ body {font-family:Arial,sans-serif;}
   border-bottom:1px solid #568568;
   align-items:end;
 }
-.skill-group-heading {grid-column:1 / span 2;margin:0;align-self:end;color:#9de0af;font-size:17px;line-height:20px;}
-.skill-column-head {
-  position:relative;
-  height:53px;
-  display:flex;
-  align-items:flex-end;
+.skill-group-heading {margin:0;align-self:end;color:#9de0af;font-size:17px;line-height:20px;}
+.skill-choice-columns {
+  display:grid;
+  grid-template-columns:repeat(3,52px);
   justify-content:center;
+  align-items:center;
   min-width:0;
-  text-align:center;
 }
+.skill-right-columns {
+  display:grid;
+  grid-template-columns:50px 76px;
+  justify-content:end;
+  align-items:center;
+  column-gap:10px;
+  min-width:0;
+}
+.skill-column-head {position:relative;height:53px;display:flex;align-items:flex-end;justify-content:center;min-width:0;text-align:center;}
 .skill-column-label {font-size:12px;font-weight:bold;color:#9de0af;line-height:20px;white-space:nowrap;}
-.skill-pick-count {
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  font-size:10px;
-  font-weight:normal;
-  color:#e7f9e7;
-  line-height:12px;
-  text-transform:capitalize;
-}
+.skill-pick-count {position:absolute;top:0;left:0;right:0;font-size:10px;font-weight:normal;color:#e7f9e7;line-height:12px;}
 .skill-pick-row {background:#1b3025;border:1px solid #426b51;padding:7px 10px;margin-bottom:4px;min-height:47px;}
+.skill-name {display:flex;align-items:baseline;gap:5px;white-space:nowrap;min-width:0;}
 .skill-name strong {font-size:13px;}
-.skill-stat {color:#a8c1ae;font-size:10px;text-align:center;white-space:nowrap;}
+.skill-stat {color:#a8c1ae;font-size:10px;white-space:nowrap;}
 .skill-rank {font-size:20px;font-weight:bold;text-align:center;}
 .skill-radio {display:flex;justify-content:center;align-items:center;margin:0;}
 .skill-radio input {width:17px;height:17px;accent-color:#9de0af;cursor:pointer;}
 .skill-radio input:disabled {cursor:not-allowed;opacity:.45;}
-.skill-purchase {grid-column:8;display:flex;gap:5px;justify-content:center;}
+.skill-purchase {display:flex;gap:5px;justify-content:center;}
 .skill-purchase button {padding:0;width:32px;height:30px;font-size:18px;}
 .visually-hidden {position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
 @media(max-width:770px){
-  .skill-pick-grid {grid-template-columns:minmax(75px,1fr) 27px 30px repeat(3,40px) 12px 70px;column-gap:3px;}
-  .skill-group-header,.skill-pick-row {padding-left:3px;padding-right:3px;}
+  .skill-pick-grid {grid-template-columns:minmax(95px,1fr) minmax(123px,1fr) minmax(107px,1fr);column-gap:5px;}
+  .skill-choice-columns {grid-template-columns:repeat(3,41px);}
+  .skill-right-columns {grid-template-columns:35px 65px;column-gap:5px;}
+  .skill-group-header,.skill-pick-row {padding-left:4px;padding-right:4px;}
   .skill-column-label {font-size:10px;}
   .skill-pick-count {font-size:9px;}
   .skill-purchase {gap:3px;}
