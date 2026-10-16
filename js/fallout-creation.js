@@ -131,12 +131,12 @@ function renderSkills() {
       <div class="skill-column-head"><span class="skill-column-label">None</span></div>
       <div class="skill-column-head"><span class="skill-pick-count">${tagLeft} picks<br>left</span><span class="skill-column-label">Tag</span></div>
       <div class="skill-column-head"><span class="skill-pick-count">${rankLeft} picks<br>left</span><span class="skill-column-label">Tag+Rank</span></div>
-      <div class="skill-column-head"><span class="skill-column-label">Purchase</span></div>
+      <div class="skill-column-head" style="grid-column:8"><span class="skill-column-label">Purchase</span></div>
     </div>` + FALLOUT_SKILLS.filter(skill => skill.group === group).map(skill => {
       const state = creation.skills[skill.id], rank = skillRank(skill.id), free = skillBonus(skill.id) + (state.tag === 'tagrank' ? 1 : 0);
       const nextCost = skillCostForLevel(state.purchased + 1, state.tag !== 'none');
       const canAdd = rank < MAX_SKILL_RANK && effectiveStartingXP() - xpSpent() >= nextCost;
-      return `<div class="skill-pick-grid skill-pick-row"><div class="skill-name"><strong>${skill.name}</strong><small>${skill.stat.toUpperCase()}</small></div>
+      return `<div class="skill-pick-grid skill-pick-row"><div class="skill-name"><strong>${skill.name}</strong></div><small class="skill-stat">${skill.stat.toUpperCase()}</small>
         <output class="skill-rank">${rank}</output>
         ${[['none','None'],['tag','Tag'],['tagrank','Tag+Rank']].map(([value, label]) => `<label class="skill-radio"><input type="radio" name="tag_${skill.id}" value="${value}" data-skill-tag="${skill.id}" ${state.tag === value ? 'checked' : ''} ${state.tag !== value && value !== 'none' && picksAvailable(value) <= 0 ? 'disabled' : ''}><span class="visually-hidden">${skill.name}: ${label}</span></label>`).join('')}
         <div class="skill-purchase"><button type="button" data-skill-purchase="${skill.id}" data-delta="-1" ${state.purchased === 0 ? 'disabled' : ''} aria-label="Reduce purchased ${skill.name} rank">−</button><button type="button" data-skill-purchase="${skill.id}" data-delta="1" ${!canAdd ? 'disabled' : ''} aria-label="Purchase ${skill.name} rank">+</button></div>

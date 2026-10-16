@@ -27,7 +27,7 @@ body {font-family:Arial,sans-serif;}
 /* Skills: aligned section headers and tightly grouped tag choices. */
 .skill-pick-grid {
   display:grid;
-  grid-template-columns:minmax(125px,1fr) 48px 43px 43px 76px 86px;
+  grid-template-columns:minmax(105px,1fr) 32px 38px repeat(3,48px) 20px 84px;
   column-gap:5px;
   align-items:center;
 }
@@ -37,7 +37,7 @@ body {font-family:Arial,sans-serif;}
   border-bottom:1px solid #568568;
   align-items:end;
 }
-.skill-group-heading {margin:0;align-self:end;color:#9de0af;font-size:17px;line-height:20px;}
+.skill-group-heading {grid-column:1 / span 2;margin:0;align-self:end;color:#9de0af;font-size:17px;line-height:20px;}
 .skill-column-head {
   position:relative;
   height:53px;
@@ -60,16 +60,17 @@ body {font-family:Arial,sans-serif;}
   text-transform:capitalize;
 }
 .skill-pick-row {background:#1b3025;border:1px solid #426b51;padding:7px 10px;margin-bottom:4px;min-height:47px;}
-.skill-name strong {font-size:13px;}.skill-name small {display:block;color:#a8c1ae;font-size:10px;}
+.skill-name strong {font-size:13px;}
+.skill-stat {color:#a8c1ae;font-size:10px;text-align:center;white-space:nowrap;}
 .skill-rank {font-size:20px;font-weight:bold;text-align:center;}
 .skill-radio {display:flex;justify-content:center;align-items:center;margin:0;}
 .skill-radio input {width:17px;height:17px;accent-color:#9de0af;cursor:pointer;}
 .skill-radio input:disabled {cursor:not-allowed;opacity:.45;}
-.skill-purchase {display:flex;gap:5px;justify-content:center;}
+.skill-purchase {grid-column:8;display:flex;gap:5px;justify-content:center;}
 .skill-purchase button {padding:0;width:32px;height:30px;font-size:18px;}
 .visually-hidden {position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
 @media(max-width:770px){
-  .skill-pick-grid {grid-template-columns:minmax(88px,1fr) 34px 34px 34px 66px 70px;column-gap:3px;}
+  .skill-pick-grid {grid-template-columns:minmax(75px,1fr) 27px 30px repeat(3,40px) 12px 70px;column-gap:3px;}
   .skill-group-header,.skill-pick-row {padding-left:3px;padding-right:3px;}
   .skill-column-label {font-size:10px;}
   .skill-pick-count {font-size:9px;}
