@@ -125,8 +125,14 @@ function changeSkillPurchase(id, delta) {
 function renderSkills() {
   const tagLeft = picksAvailable('tag'), rankLeft = picksAvailable('tagrank');
   return `<h2>Skills</h2><p>Choose Tag skills and Tag+Rank skills. Both are career skills for XP costs; Tag+Rank also grants one free rank. Free ranks from an Origin are included in the total, with a maximum rank of ${MAX_SKILL_RANK}.</p>
-    <div class="skill-pick-grid skill-pick-head"><span>Skill</span><span>Rank</span><span>None</span><span>Tag <small>${tagLeft} Picks Left</small></span><span>Tag+Rank <small>${rankLeft} Picks Left</small></span><span>Purchase</span></div>
-    ${['General','Combat','Social','Knowledge'].map(group => `<h3 class="skill-group-heading">${group}</h3>` + FALLOUT_SKILLS.filter(skill => skill.group === group).map(skill => {
+    ${['General','Combat','Social','Knowledge'].map(group => `<div class="skill-pick-grid skill-group-header">
+      <h3 class="skill-group-heading">${group}</h3>
+      <div class="skill-column-head"><span class="skill-column-label">Rank</span></div>
+      <div class="skill-column-head"><span class="skill-column-label">None</span></div>
+      <div class="skill-column-head"><span class="skill-pick-count">${tagLeft} picks<br>left</span><span class="skill-column-label">Tag</span></div>
+      <div class="skill-column-head"><span class="skill-pick-count">${rankLeft} picks<br>left</span><span class="skill-column-label">Tag+Rank</span></div>
+      <div class="skill-column-head"><span class="skill-column-label">Purchase</span></div>
+    </div>` + FALLOUT_SKILLS.filter(skill => skill.group === group).map(skill => {
       const state = creation.skills[skill.id], rank = skillRank(skill.id), free = skillBonus(skill.id) + (state.tag === 'tagrank' ? 1 : 0);
       const nextCost = skillCostForLevel(state.purchased + 1, state.tag !== 'none');
       const canAdd = rank < MAX_SKILL_RANK && effectiveStartingXP() - xpSpent() >= nextCost;
