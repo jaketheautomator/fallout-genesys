@@ -7,6 +7,7 @@ const FALLOUT_RULES = Object.freeze({
     'Robobrain', 'Brotherhood Initiate', 'Child of Atom', 'Tribal', 'Enclave Remnant'
   ],
   startingXP: 110,
+  reducedRankBonusXP: 20,
   special: [
     { id: 'str', name: 'Strength', genesys: 'Brawn' },
     { id: 'per', name: 'Perception', genesys: 'Cunning' },
@@ -29,11 +30,15 @@ function xpForRank(rank) {
   for (let r = 3; r <= rank; r++) spent += r * 10;
   return spent;
 }
+function effectiveStartingXP() {
+  return FALLOUT_RULES.startingXP + (Object.values(creation.ranks).some(rank => rank === 1) ? FALLOUT_RULES.reducedRankBonusXP : 0);
+}
 function xpSpent() {
   return Object.values(creation.ranks).reduce((sum, rank) => sum + xpForRank(rank), 0);
 }
 function render() {
-  const remaining = FALLOUT_RULES.startingXP - xpSpent();
+  const remaining = effectiveStartingXP() - xpSpent();
+  const reducedAlready = Object.values(creation.ranks).some(rank => rank === 1);
   document.querySelectorAll('[data-step]').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.step === creation.currentStep);
     btn.setAttribute('aria-current', btn.dataset.step === creation.currentStep ? 'step' : 'false');
@@ -44,12 +49,12 @@ function render() {
       <div class="origin-grid">${FALLOUT_RULES.origins.map(name => `<button type="button" class="origin-option ${creation.origin === name ? 'selected' : ''}" ${name !== 'Survivor' ? 'disabled title="Origin rules not yet defined"' : ''} data-origin="${name}">${name}${name !== 'Survivor' ? '<small>Coming later</small>' : '<small>110 XP · All ranks 2</small>'}</button>`).join('')}</div>
       <h3>Survivor</h3><p>Six mechanical characteristics begin at rank 2 (displayed SPECIAL score 3). The Survivor starts with 110 XP. Other origin features will be added as creation advances.</p>`;
   } else {
-    content.innerHTML = `<h2>S.P.E.C.I.A.L.</h2><p>Each rank is a Genesys characteristic. The displayed Fallout score is derived from its rank. Buy higher ranks with starting XP; creation purchases may not exceed rank 5.</p>
+    content.innerHTML = `<h2>S.P.E.C.I.A.L.</h2><p>Each rank is a Genesys characteristic. The displayed Fallout score is derived from its rank. Buy higher ranks with starting XP; creation purchases may not exceed rank 5. One characteristic may be reduced to rank 1, adding 20 XP to the starting pool.</p>
       <div class="special-build-list">${FALLOUT_RULES.special.map(s => {
         const rank = creation.ranks[s.id];
         const nextCost = (rank + 1) * 10;
         return `<div class="special-build-row"><div><strong>${s.id.toUpperCase()}</strong><small>${s.name} / ${s.genesys}</small></div>
-          <output class="special-score">${FALLOUT_RULES.score[rank]}</output><div class="rank-controls"><button type="button" data-stat="${s.id}" data-delta="-1" ${rank === 2 ? 'disabled' : ''} aria-label="Decrease ${s.name}">−</button><span>Rank ${rank}</span><button type="button" data-stat="${s.id}" data-delta="1" ${rank === 5 || remaining < nextCost ? 'disabled' : ''} aria-label="Increase ${s.name}">+</button></div></div>`;
+          <output class="special-score">${FALLOUT_RULES.score[rank]}</output><div class="rank-controls"><button type="button" data-stat="${s.id}" data-delta="-1" ${rank === 1 || (rank === 2 && reducedAlready) ? 'disabled' : ''} aria-label="Decrease ${s.name}">−</button><span>Rank ${rank}</span><button type="button" data-stat="${s.id}" data-delta="1" ${rank === 5 || (rank === 1 ? remaining < FALLOUT_RULES.reducedRankBonusXP : remaining < nextCost) ? 'disabled' : ''} aria-label="Increase ${s.name}">+</button></div></div>`;
       }).join('')}</div><p class="luck-note">LCK is a separate Luck pool, not a characteristic purchased with XP. Starting maximum and current Luck: 5.</p>`;
   }
   document.getElementById('summary-origin').textContent = creation.origin;
@@ -73,8 +78,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!button || button.disabled) return;
     const { stat, delta } = button.dataset;
     const updated = creation.ranks[stat] + Number(delta);
-    if (updated < 2 || updated > 5) return;
-    if (Number(delta) > 0 && xpForRank(updated) - xpForRank(creation.ranks[stat]) > FALLOUT_RULES.startingXP - xpSpent()) return;
+    if (updated < 1 || updated > 5) return;
+    if (updated === 1 && Object.entries(creation.ranks).some(([id, rank]) => id !== stat && rank === 1)) return;
+    const newRanks = { ...creation.ranks, [stat]: updated };
+    const newXP = FALLOUT_RULES.startingXP + (Object.values(newRanks).some(rank => rank === 1) ? FALLOUT_RULES.reducedRankBonusXP : 0);
+    const newSpent = Object.values(newRanks).reduce((sum, rank) => sum + xpForRank(rank), 0);
+    if (newSpent > newXP) return;
     creation.ranks[stat] = updated;
     render();
   });
