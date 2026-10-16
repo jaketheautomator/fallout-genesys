@@ -79,23 +79,16 @@ body {font-family:Arial,sans-serif;}
   .skill-group-heading {font-size:15px;}
 }
 
-/* Perks catalog */
-.perk-toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin:15px 0}
-.perk-toolbar label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--text-muted)}
-.perk-toolbar input[type="search"],.perk-toolbar select{background:#102018;color:#e7f9e7;border:1px solid #568568;border-radius:3px;padding:8px;min-height:34px}
-.perk-toolbar input[type="search"]{min-width:200px}
-.perk-toolbar .perk-owned{flex-direction:row;align-items:center;gap:6px;min-height:34px}
-.perk-total{color:#9de0af;font-weight:bold;font-size:13px}
-.perk-list{display:grid;gap:7px;margin-top:12px}
-.perk-card{display:grid;grid-template-columns:minmax(0,1fr) 145px;gap:15px;align-items:center;padding:12px;background:#1b3025;border:1px solid #426b51;border-radius:3px}
-.perk-title{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
-.perk-title strong{color:#9de0af;font-size:15px}
-.perk-title span,.perk-note{font-size:11px;color:#a8c1ae}
-.perk-details p{margin:7px 0 0;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}
-.perk-note{display:block;margin-top:7px}
-.perk-purchase{display:grid;grid-template-columns:1fr 32px 32px;gap:5px;align-items:center;justify-items:center}
-.perk-rank-label{font-size:12px;white-space:nowrap}
-.perk-purchase button{padding:0;width:32px;height:32px;font-size:18px}
-.perk-purchase small{grid-column:1/-1;text-align:center;color:#a8c1ae;font-size:11px}
+/* Original ASOIAF Talents page layout, adapted only to Fallout's palette. */
+.talents-section .talent-pyramid-summary {grid-template-columns:repeat(5,minmax(0,1fr));}
+.talents-section .talent-pyramid-slot-filled {background:#294f37;color:#e7f9e7;border-color:#9de0af;}
+.talents-section .talent-pyramid-slot-empty {background:#102018;border-color:#568568;}
+.talents-section .talent-card {background:#1b3025;color:#e7f9e7;}
+.talents-section .talent-card.talent-card-purchased {background:#294f37;border-color:#9de0af;}
+.talents-section .talent-card h4 {color:#9de0af;}
+.talents-section .talent-metadata {color:#a8c1ae;font-size:.9rem;margin-bottom:8px;}
+.talents-section .talent-description {white-space:pre-wrap;overflow-wrap:anywhere;}
+.talents-section .talent-prerequisites {color:#a8c1ae;font-size:.9rem;}
+.talents-section .talent-controls button {padding:7px 11px;}
 .perk-error{color:#f8b2a6}
-@media(max-width:600px){.perk-card{grid-template-columns:minmax(0,1fr);gap:9px}.perk-purchase{justify-content:end;grid-template-columns:55px 32px 32px}.perk-purchase small{grid-column:1/-1;text-align:right}}
+@media(max-width:700px){.talents-section .talent-pyramid-summary{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.talents-section .talent-pyramid-slot{padding:4px 2px;font-size:10px;min-height:29px;}}

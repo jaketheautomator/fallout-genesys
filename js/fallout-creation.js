@@ -88,75 +88,98 @@ function skillXpSpent() {
 // Perks are loaded from the existing CSV, not duplicated in JavaScript.
 let falloutPerks = [];
 let perkDataError = '';
-const perkView = { search:'', tier:'all', owned:false };
 function perkById(id) { return falloutPerks.find(p => p.id === id); }
 function perkRank(id) { return creation.perks[id] || 0; }
-function perkEffectiveTier(perk, rank) {
-  return Math.min(5, perk.tier + (perk.ranked ? rank - 1 : 0));
-}
+function perkEffectiveTier(perk, rank) { return Math.min(5, perk.tier + (perk.ranked ? rank - 1 : 0)); }
 function perkTierCount(tier) {
-  return falloutPerks.reduce((sum,p) => {
-    for (let r=1; r<=perkRank(p.id); r++) if (perkEffectiveTier(p,r)===tier) sum++;
+  return falloutPerks.reduce((sum, perk) => {
+    for (let r=1;r<=perkRank(perk.id);r++) if(perkEffectiveTier(perk,r)===tier) sum++;
     return sum;
-  }, 0);
+  },0);
 }
 function perkXpSpent() {
-  return falloutPerks.reduce((sum,p) => {
-    for(let r=1; r<=perkRank(p.id); r++) sum += 5 * perkEffectiveTier(p,r);
+  return falloutPerks.reduce((sum, perk) => {
+    for (let r=1;r<=perkRank(perk.id);r++) sum += 5 * perkEffectiveTier(perk,r);
     return sum;
-  }, 0);
+  },0);
 }
-function perkPrerequisitesMet(perk) {
-  return perk.prerequisites.every(id => perkRank(id) > 0);
-}
+function perkPrerequisitesMet(perk) { return perk.prerequisites.every(id => perkRank(id)>0); }
 function pyramidValid() {
-  for (let tier=2; tier<=5; tier++) {
+  for (let tier=2;tier<=5;tier++) {
     if (perkTierCount(tier)>0 && perkTierCount(tier)>=perkTierCount(tier-1)) return false;
   }
   return true;
 }
-function prerequisitesValid() {
-  return falloutPerks.every(perk => !perkRank(perk.id) || perkPrerequisitesMet(perk));
+function prerequisitesValid() { return falloutPerks.every(perk => !perkRank(perk.id)||perkPrerequisitesMet(perk)); }
+function canAddPerkAtTier(tier) {
+  if(tier===1) return true;
+  return perkTierCount(tier-1) > perkTierCount(tier)+1;
 }
-function changePerk(id, delta) {
-  const perk = perkById(id);
-  if (!perk || ![1,-1].includes(delta)) return;
-  const old = perkRank(id), next = old + delta;
-  if (next < 0 || (delta>0 && !perk.ranked && old>0)) return;
-  if (delta>0 && !perkPrerequisitesMet(perk)) return;
-  creation.perks[id] = next;
-  if (!pyramidValid() || !prerequisitesValid() || xpSpent() > effectiveStartingXP()) creation.perks[id] = old;
+function canPurchasePerk(id) {
+  const perk=perkById(id);
+  if(!perk || (!perk.ranked && perkRank(id)) || !perkPrerequisitesMet(perk)) return false;
+  const tier=perkEffectiveTier(perk,perkRank(id)+1);
+  return canAddPerkAtTier(tier) && 5*tier<=effectiveStartingXP()-xpSpent();
+}
+function canRemovePerk(id) {
+  if(!perkRank(id)) return false;
+  creation.perks[id]--;
+  const allowed=pyramidValid() && prerequisitesValid();
+  creation.perks[id]++;
+  return allowed;
+}
+function changePerk(id,delta) {
+  if(delta===1 && !canPurchasePerk(id)) return;
+  if(delta===-1 && !canRemovePerk(id)) return;
+  creation.perks[id]=(creation.perks[id]||0)+delta;
   render();
+}
+function perkRankAtTier(perk,tier) {
+  for(let rank=1;rank<=perkRank(perk.id);rank++) if(perkEffectiveTier(perk,rank)===tier) return rank;
+  return null;
+}
+function purchasedPerksAtTier(tier) {
+  const result=[];
+  for(const perk of falloutPerks) for(let rank=1;rank<=perkRank(perk.id);rank++) {
+    if(perkEffectiveTier(perk,rank)===tier) result.push({perk,rank});
+  }
+  return result;
 }
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
+/* Matches the original ASOIAF Talents page: pyramid, expanded tiers, cards, and Purchased / XP buttons. */
 function renderPerks() {
-  if (perkDataError) return `<h2>Perks</h2><p class="perk-error">${escapeHtml(perkDataError)}</p>`;
-  if (!falloutPerks.length) return '<h2>Perks</h2><p>Loading perks from talents.csv…</p>';
-  const filtered=falloutPerks.filter(perk =>
-    (perkView.tier==='all' || String(perk.tier)===perkView.tier) &&
-    (!perkView.owned || perkRank(perk.id)>0) &&
-    `${perk.name} ${perk.description} ${perk.activation}`.toLowerCase().includes(perkView.search.toLowerCase())
-  );
-  return `<h2>Perks</h2><p>Provisional catalog from <code>data/talents.csv</code>. Perks use the Genesys talent pyramid: higher tiers require more purchases in the tier immediately below. Ranked Perks cost progressively more XP, up to tier 5.</p>
-  <div class="perk-toolbar"><label>Search <input type="search" id="perk-search" value="${escapeHtml(perkView.search)}" placeholder="Search Perks"></label><label>Tier <select id="perk-tier"><option value="all">All</option>${[1,2,3,4,5].map(t=>`<option value="${t}" ${perkView.tier===String(t)?'selected':''}>${t}</option>`).join('')}</select></label><label class="perk-owned"><input type="checkbox" id="perk-owned" ${perkView.owned?'checked':''}> Purchased only</label></div>
-  <p class="perk-total">Purchased Perks: ${Object.values(creation.perks).reduce((sum,n)=>sum+n,0)} · XP spent on Perks: ${perkXpSpent()}</p>
-  <div class="perk-list">${filtered.length?filtered.map(perk=>{
-    const owned=perkRank(perk.id),tier=perkEffectiveTier(perk,owned+1), cost=5*tier;
-    const unmet=perk.prerequisites.filter(id=>perkRank(id)===0).map(id=>perkById(id)?.name||id);
-    const canAdd=perk.ranked||!owned;
-    // Use the same rule validation as the mutation path.
-    const trial=owned+1; creation.perks[perk.id]=trial;
-    const affordable=xpSpent()<=effectiveStartingXP(),valid=pyramidValid()&&prerequisitesValid();
-    creation.perks[perk.id]=owned;
-    const allowed=canAdd && !unmet.length && affordable && valid;
-    let note='';
-    if(unmet.length) note=`Requires: ${unmet.join(', ')}`;
-    else if(!valid && canAdd) note='Talent pyramid requirement not met';
-    else if(!affordable && canAdd) note='Insufficient XP';
-    return `<article class="perk-card"><div class="perk-details"><div class="perk-title"><strong>${escapeHtml(perk.name)}</strong><span>Tier ${perk.tier} · ${escapeHtml(perk.activation)}${perk.ranked?' · Ranked':''}</span></div><p>${escapeHtml(perk.description)}</p>${note?`<small class="perk-note">${escapeHtml(note)}</small>`:''}</div><div class="perk-purchase"><span class="perk-rank-label">Rank <strong>${owned}</strong></span><button type="button" data-perk="${escapeHtml(perk.id)}" data-perk-delta="-1" ${!owned?'disabled':''} aria-label="Remove ${escapeHtml(perk.name)}">−</button><button type="button" data-perk="${escapeHtml(perk.id)}" data-perk-delta="1" ${!allowed?'disabled':''} aria-label="Purchase ${escapeHtml(perk.name)}">+</button><small>${canAdd?cost+' XP next':'Maxed'}</small></div></article>`;
-  }).join(''):'<p>No Perks match the filters.</p>'}</div>`;
+  if(perkDataError) return `<h2>Perks</h2><p class="perk-error">${escapeHtml(perkDataError)}</p>`;
+  if(!falloutPerks.length) return '<h2>Perks</h2><p>Loading perks from talents.csv…</p>';
+  return `<section class="talents-section"><h2>Perks</h2>
+    <p>Purchase perks using the Genesys talent pyramid. Each occupied tier must contain fewer perks than the tier below it. Ranked perks increase in tier with each additional rank.</p>
+    <div class="talent-pyramid-summary">${[1,2,3,4,5].map(tier => `
+      <div class="talent-pyramid-tier"><h3>Tier ${tier}</h3>
+      ${purchasedPerksAtTier(tier).map(({perk,rank})=>`<div class="talent-pyramid-slot talent-pyramid-slot-filled">${escapeHtml(perk.name)}${perk.ranked&&rank>1?` (Rank ${rank})`:''}</div>`).join('')}
+      ${canAddPerkAtTier(tier)?'<div class="talent-pyramid-slot talent-pyramid-slot-empty"></div>':''}</div>`).join('')}</div>
+    ${[1,2,3,4,5].map(tier => {
+      const entries=falloutPerks.filter(perk => perkRankAtTier(perk,tier)!==null || perkEffectiveTier(perk,perkRank(perk.id)+1)===tier);
+      return `<details class="talent-tier" open><summary class="talent-tier-summary"><span>Tier ${tier}</span><span class="talent-tier-count">${perkTierCount(tier)} Purchased</span></summary>
+        ${entries.length?`<div class="talent-list">${entries.map(perk => renderPerkCard(perk,tier)).join('')}</div>`:'<p>No perks available at this tier.</p>'}</details>`;
+    }).join('')}</section>`;
+}
+function renderPerkCard(perk,displayTier) {
+  const purchasedRank=perkRankAtTier(perk,displayTier);
+  const currentRank=perkRank(perk.id);
+  const highestTier=currentRank?perkEffectiveTier(perk,currentRank):null;
+  const nextTier=perkEffectiveTier(perk,currentRank+1);
+  const canShowPurchase=nextTier===displayTier && (perk.ranked || !currentRank);
+  return `<div class="talent-card ${purchasedRank!==null?'talent-card-purchased':''}">
+    <h4>${escapeHtml(perk.name)}</h4>
+    <div class="talent-metadata">${escapeHtml(perk.activation)}${perk.ranked?' <span>; Ranked</span>':''}</div>
+    <p class="talent-description">${escapeHtml(perk.description)}</p>
+    ${perk.prerequisites.length?`<p class="talent-prerequisites">Prerequisite: ${escapeHtml(perk.prerequisites.map(id=>perkById(id)?.name||id).join(', '))}</p>`:''}
+    <div class="talent-controls">
+      ${currentRank>0 && highestTier===displayTier?`<button type="button" data-perk="${escapeHtml(perk.id)}" data-perk-delta="-1" ${!canRemovePerk(perk.id)?'disabled':''}>Purchased</button>`:''}
+      ${canShowPurchase?`<button type="button" data-perk="${escapeHtml(perk.id)}" data-perk-delta="1" ${!canPurchasePerk(perk.id)?'disabled':''}>${nextTier*5} XP</button>`:''}
+    </div>
+  </div>`;
 }
 function parsePerkCsv(csv) {
   const rows=[];let row=[],field='',quoted=false;
@@ -328,19 +351,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (updated === 1 && Object.entries(creation.ranks).some(([id, rank]) => id !== stat && rank === 1)) return;
     const newRanks = { ...creation.ranks, [stat]: updated };
     const newXP = currentOrigin().startingXP + (Object.values(newRanks).some(rank => rank === 1) ? FALLOUT_RULES.reducedRankBonusXP : 0);
-    const newSpent = Object.values(newRanks).reduce((sum, rank) => sum + xpForRank(rank), 0) + skillXpSpent();
+    const newSpent = Object.values(newRanks).reduce((sum, rank) => sum + xpForRank(rank), 0) + skillXpSpent() + perkXpSpent();
     if (newSpent > newXP) return;
     creation.ranks[stat] = updated;
     render();
   });
   document.getElementById('builder-content').addEventListener('change', ev => {
-    if(ev.target.id==='perk-tier'){perkView.tier=ev.target.value;render();return;}
-    if(ev.target.id==='perk-owned'){perkView.owned=ev.target.checked;render();return;}
     const radio = ev.target.closest('input[data-skill-tag]');
     if (radio) changeSkillTag(radio.dataset.skillTag, radio.value);
-  });
-  document.getElementById('builder-content').addEventListener('input', ev => {
-    if(ev.target.id==='perk-search'){const start=ev.target.selectionStart;perkView.search=ev.target.value;render();const next=document.getElementById('perk-search');next?.focus();next?.setSelectionRange(start,start);}
   });
   loadPerks();
   render();
