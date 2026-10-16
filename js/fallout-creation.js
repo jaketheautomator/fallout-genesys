@@ -50,7 +50,8 @@ const creation = {
   ranks: { ...initialOrigin.startingRanks },
   luckMax: initialOrigin.luck, luckCurrent: initialOrigin.luck, caps: initialOrigin.startingCaps,
   skills: Object.fromEntries(FALLOUT_SKILLS.map(skill => [skill.id, { tag:'none', purchased:0 }])),
-  perks: {}
+  perks: {},
+  equipment: [], equippedArmor: null, containers: [{ id: 0, name: "Pockets", stowed: false }]
 };
 
 function currentOrigin() {
@@ -296,6 +297,8 @@ function render() {
     content.innerHTML = renderSkills();
   } else if (creation.currentStep === 'perks') {
     content.innerHTML = renderPerks();
+  } else if (creation.currentStep === 'equipment') {
+    content.innerHTML = renderEquipmentStep();
   } else {
     content.innerHTML = `<h2>S.P.E.C.I.A.L.</h2><p>Each rank is a Genesys characteristic. The displayed Fallout score is derived from its rank. Buy higher ranks with starting XP; creation purchases may not exceed rank 5. One characteristic may be reduced to rank 1, adding 20 XP to the starting pool.</p>
       <div class="special-build-list">${FALLOUT_RULES.special.map(s => {
@@ -308,6 +311,7 @@ function render() {
   document.getElementById('summary-origin').textContent = currentOrigin().name;
   document.getElementById('summary-xp-spent').textContent = xpSpent();
   document.getElementById('summary-xp-remaining').textContent = remaining;
+  creation.caps = equipmentCaps();
   document.getElementById('summary-caps').textContent = creation.caps.toLocaleString('en-US');
   document.getElementById('summary-name').textContent = creation.name || 'Unnamed Wastelander';
 }
@@ -331,11 +335,24 @@ document.addEventListener('DOMContentLoaded', () => {
         creation.luckMax = origin.luck;
         creation.luckCurrent = origin.luck;
         creation.caps = origin.startingCaps;
+        creation.equipment = [];
+        creation.equippedArmor = null;
+        creation.containers = [{ id: 0, name: "Pockets", stowed: false }];
         normaliseSkillPurchases();
       }
       render();
       return;
     }
+    const packageBuy=ev.target.closest('button[data-buy-package]');
+    if(packageBuy&&!packageBuy.disabled){buyStarterPackage();return;}
+    const addContainer=ev.target.closest('button[data-container-add]');
+    if(addContainer){addEquipmentContainer();return;}
+    const removeContainer=ev.target.closest('button[data-container-remove]');
+    if(removeContainer){removeEquipmentContainer(Number(removeContainer.dataset.containerRemove));return;}
+    const equipmentBuy=ev.target.closest('button[data-equipment-buy]');
+    if(equipmentBuy&&!equipmentBuy.disabled){buyEquipment(equipmentBuy.dataset.equipmentBuy);return;}
+    const equipmentRefund=ev.target.closest('button[data-equipment-refund]');
+    if(equipmentRefund){refundEquipment(Number(equipmentRefund.dataset.equipmentRefund));return;}
     const perkButton=ev.target.closest('button[data-perk]');
     if(perkButton && !perkButton.disabled){changePerk(perkButton.dataset.perk,Number(perkButton.dataset.perkDelta));return;}
     const skillPurchase = ev.target.closest('button[data-skill-purchase]');
@@ -357,9 +374,19 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   });
   document.getElementById('builder-content').addEventListener('change', ev => {
+    const containerName=ev.target.closest('input[data-container-name]');
+    if(containerName){renameEquipmentContainer(Number(containerName.dataset.containerName),containerName.value);return;}
+    const containerStowed=ev.target.closest('input[data-container-stowed]');
+    if(containerStowed){setEquipmentContainerStowed(Number(containerStowed.dataset.containerStowed),containerStowed.checked);return;}
+    const itemContainer=ev.target.closest('select[data-item-container]');
+    if(itemContainer){moveEquipmentItem(Number(itemContainer.dataset.itemContainer),Number(itemContainer.value));return;}
+    const armorSelect=ev.target.closest('select[data-equipment-armor]');
+    if(armorSelect){creation.equippedArmor=armorSelect.value?Number(armorSelect.value):null;rerenderEquipment();return;}
     const radio = ev.target.closest('input[data-skill-tag]');
     if (radio) changeSkillTag(radio.dataset.skillTag, radio.value);
   });
+  document.getElementById('builder-content').addEventListener('toggle',ev=>{const details=ev.target.closest('details[data-equipment-details]');if(!details)return;const set=details.dataset.category==='1'?equipmentUI.openCategories:equipmentUI.openPanels;details.open?set.add(details.dataset.equipmentDetails):set.delete(details.dataset.equipmentDetails);},true);
   loadPerks();
+  loadFalloutEquipment();
   render();
 });
