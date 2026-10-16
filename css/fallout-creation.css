@@ -23,3 +23,20 @@ body {font-family:Arial,sans-serif;}
 
 /* Luck appears as the seventh SPECIAL value without rank controls. */
 .luck-build-row .luck-controls { visibility:hidden; }
+
+/* Skill selection: stable six-column table with per-skill tag choice. */
+.skill-pick-grid {display:grid;grid-template-columns:minmax(145px,2fr) 52px 52px minmax(75px,1fr) minmax(105px,1.2fr) 86px;gap:8px;align-items:center;}
+.skill-pick-head {margin:14px 0 6px;padding:8px 10px;border-bottom:1px solid #568568;font-size:12px;color:#9de0af;font-weight:bold;text-align:center;}
+.skill-pick-head span:first-child{text-align:left;}
+.skill-pick-head small {display:block;font-size:11px;font-weight:normal;color:#e7f9e7;white-space:nowrap;}
+.skill-group-heading {margin:16px 0 6px;color:#9de0af;}
+.skill-pick-row {background:#1b3025;border:1px solid #426b51;padding:7px 10px;margin-bottom:4px;min-height:47px;}
+.skill-name strong {font-size:13px;}.skill-name small {display:block;color:#a8c1ae;font-size:10px;}
+.skill-rank {font-size:20px;font-weight:bold;text-align:center;}
+.skill-radio {display:flex;justify-content:center;align-items:center;margin:0;}
+.skill-radio input {width:17px;height:17px;accent-color:#9de0af;cursor:pointer;}
+.skill-radio input:disabled {cursor:not-allowed;opacity:.45;}
+.skill-purchase {display:flex;gap:5px;justify-content:center;}
+.skill-purchase button {padding:0;width:32px;height:30px;font-size:18px;}
+.visually-hidden {position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+@media(max-width:770px){.skill-pick-grid{grid-template-columns:minmax(95px,2fr) 32px 34px 53px 76px 72px;gap:3px;}.skill-pick-head,.skill-pick-row{padding:6px 3px;}.skill-pick-head{font-size:10px;}.skill-pick-head small{font-size:9px;white-space:normal;}.skill-purchase button{width:28px;}}
