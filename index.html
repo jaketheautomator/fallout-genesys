@@ -1,103 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ASOIAF Genesys Character Builder</title>
-
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fallout Genesys Character Builder</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/fallout-creation.css">
 </head>
-
 <body>
-
-    <main id="app">
-
-        <header class="app-header">
-            <h1>A Song of Ice and Fire</h1>
-            <p>Genesys Character Builder</p>
-        </header>
-
-        <div class="builder-layout">
-
-            <section class="builder">
-
-                <nav id="creation-nav">
-                    <button data-step="characteristics">Characteristics</button>
-                    <button data-step="career">Career</button>
-                    <button data-step="background">Background</button>
-                    <button data-step="obligation">Obligation</button>
-                    <button data-step="skills">Skills</button>
-                    <button data-step="talents">Talents</button>
-                    <button data-step="equipment">Equipment</button>
-                </nav>
-
-                <section id="builder-content">
-                    <!-- Character creation interface is rendered here -->
-                </section>
-
-            </section>
-
-            <aside id="character-summary">
-
-                <h2>Character</h2>
-
-                <div id="character-name">
-                    <label for="name">Name</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder="Character Name"
-                    >
-                </div>
-
-                <hr>
-
-                <div id="summary-background">
-                    <strong>Background:</strong>
-                    <span>—</span>
-                </div>
-
-                <div id="summary-career">
-                    <strong>Career:</strong>
-                    <span>—</span>
-                </div>
-
-                <div id="summary-specialization">
-                    <strong>Specialization:</strong>
-                    <span>—</span>
-                </div>
-
-                <hr>
-
-                <div id="summary-xp">
-                    <strong>XP Remaining:</strong>
-                    <span>110</span>
-                </div>
-
-                <div id="summary-obligation">
-                    <strong>Obligation:</strong>
-                    <span>10</span>
-                </div>
-
-                <div id="summary-wealth">
-                    <strong>Silver Stags:</strong>
-                    <span>1,000</span>
-                </div>
-
-            </aside>
-
-        </div>
-
-    </main>
-
-    <script src="js/data.js"></script>
-    <script src="js/equipment-data.js"></script>
-    <script src="js/talent-data.js"></script>
-    <script src="js/character.js"></script>
-    <script src="js/report.js"></script>
-    <script src="js/app.js"></script>
-
+  <main id="app">
+    <header class="app-header"><h1>FALLOUT</h1><p>Genesys Character Builder</p></header>
+    <div class="builder-layout">
+      <section class="builder">
+        <nav id="creation-nav" aria-label="Character creation steps">
+          <button type="button" data-step="origin">Origin</button>
+          <button type="button" data-step="special">S.P.E.C.I.A.L.</button>
+          <button type="button" disabled title="Next implementation stage">Skills</button>
+          <button type="button" disabled title="Next implementation stage">Perks</button>
+          <button type="button" disabled title="Next implementation stage">Equipment</button>
+          <button type="button" disabled title="Next implementation stage">Review</button>
+        </nav>
+        <section id="builder-content" aria-live="polite"></section>
+      </section>
+      <aside id="character-summary">
+        <h2>Character</h2>
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" placeholder="Character Name">
+        <p id="summary-name">Unnamed Wastelander</p>
+        <hr>
+        <p><strong>Origin:</strong> <span id="summary-origin">Survivor</span></p>
+        <p><strong>XP Spent:</strong> <span id="summary-xp-spent">0</span></p>
+        <p><strong>XP Remaining:</strong> <span id="summary-xp-remaining">110</span></p>
+        <p><strong>Luck:</strong> <span id="summary-luck">5 / 5</span></p>
+      </aside>
+    </div>
+  </main>
+  <script src="js/fallout-creation.js"></script>
 </body>
 </html>

@@ -1,0 +1,22 @@
+/* Fallout-specific layer. Original ASOIAF builder assets remain available. */
+:root { --page-bg:#101a17; --panel-bg:#1b3025; --panel-alt:#15251b; --text:#e7f9e7; --text-muted:#a8c1ae; --border:#426b51; --border-dark:#568568; --accent:#9de0af; --accent-dark:#568568; --disabled-bg:#16231c; --disabled-text:#708575; }
+body {font-family:Arial,sans-serif;}
+.app-header h1 {font-weight:800;letter-spacing:5px;}
+#creation-nav button:disabled {opacity:.42;}
+#character-summary input {width:100%;min-width:0;background:#102018;color:#e7f9e7;border:1px solid #568568;padding:8px;}
+#character-summary p {overflow-wrap:anywhere;}
+.origin-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:18px 0;}
+.origin-option {background:#1b3025;border:1px solid #568568;border-radius:4px;padding:16px 12px;color:#e7f9e7;text-align:left;min-height:75px;}
+.origin-option small {display:block;color:#a8c1ae;font-size:11px;margin-top:7px;}
+.origin-option.selected {border:2px solid #9de0af;}
+.origin-option:disabled {opacity:.44;cursor:not-allowed;}
+.special-build-list {display:grid;gap:7px;margin:16px 0;}
+.special-build-row {display:grid;grid-template-columns:minmax(0,1fr) 75px 185px;align-items:center;gap:12px;padding:12px;background:#1b3025;border:1px solid #426b51;border-radius:3px;}
+.special-build-row strong {font-size:17px;color:#9de0af;letter-spacing:2px;}
+.special-build-row small {display:block;color:#a8c1ae;font-size:11px;}
+.special-score {text-align:center;font-weight:800;font-size:26px;color:#e7f9e7;}
+.rank-controls {display:flex;gap:8px;align-items:center;justify-content:flex-end;}
+.rank-controls button {width:32px;height:32px;padding:0;font-size:20px;}
+.rank-controls span {min-width:58px;text-align:center;font-size:12px;white-space:nowrap;}
+.luck-note {color:#a8c1ae;font-size:12px;}
+@media(max-width:720px){.special-build-row{grid-template-columns:minmax(0,1fr) 45px 130px;gap:5px;padding:8px}.rank-controls{gap:3px}.rank-controls span{min-width:45px;}}
