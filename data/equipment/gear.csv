@@ -38,3 +38,4 @@ guide,Guide (daily),service,0,5,3,"A local familiar with the roads, trails, sett
 travel-riverboat,Travel by Riverboat (daily),service,0,10,2,"Passage aboard a riverboat carrying passengers and cargo along the waterways of the Seven Kingdoms, subject to currents, weather, and the river's course."
 travel-wagon,Travel by Wagon (daily),service,0,4,1,"Passage aboard a horse- or mule-drawn wagon traveling the roads and tracks of the realm, with limited comfort among its cargo and fellow passengers."
 travel-carriage,Travel by Carriage (daily),service,0,25,5,"Passage in a covered, horse-drawn carriage offering cushioned seating and shelter from the elements, favored by wealthy travelers and those of noble birth."
+footlocker,Footlocker,general,0,100,1,"Items may be kept in a footlocker at your primary settlement. Items stored this way do not count against your encumbrance but are unavailable while traveling."

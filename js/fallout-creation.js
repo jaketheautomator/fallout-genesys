@@ -154,7 +154,7 @@ function renderPerks() {
   if(perkDataError) return `<h2>Perks</h2><p class="perk-error">${escapeHtml(perkDataError)}</p>`;
   if(!falloutPerks.length) return '<h2>Perks</h2><p>Loading perks from talents.csv…</p>';
   return `<section class="talents-section"><h2>Perks</h2>
-    <p>Purchase perks using the Genesys talent pyramid. Each occupied tier must contain fewer perks than the tier below it. Ranked perks increase in tier with each additional rank.</p>
+    <p>Purchase Perks using remaining XP. You must have more lower tier Perks to purchase higher Tier Perks. The blank spaces below show which Tiers are legal.</p>
     <div class="talent-pyramid-summary">${[1,2,3,4,5].map(tier => `
       <div class="talent-pyramid-tier"><h3>Tier ${tier}</h3>
       ${purchasedPerksAtTier(tier).map(({perk,rank})=>`<div class="talent-pyramid-slot talent-pyramid-slot-filled">${escapeHtml(perk.name)}${perk.ranked&&rank>1?` (Rank ${rank})`:''}</div>`).join('')}
@@ -252,7 +252,7 @@ function changeSkillPurchase(id, delta) {
 }
 function renderSkills() {
   const tagLeft = picksAvailable('tag'), rankLeft = picksAvailable('tagrank');
-  return `<h2>Skills</h2><p>Choose Tag skills and Tag+Rank skills. Both are career skills for XP costs; Tag+Rank also grants one free rank. Free ranks from an Origin are included in the total, with a maximum rank of ${MAX_SKILL_RANK}.</p>
+  return `<h2>Skills</h2><p>Choose skills to Tag and decrease the XP cost of improving. Of these, some will also receive a free rank. Then, use XP to purchase up to Rank 2 in any skills. Non-Tag skills cost 5 more XP each increase.</p>
     <div class="skills-table">${['General','Combat','Social','Knowledge'].map(group => `<div class="skill-pick-grid skill-group-header">
       <h3 class="skill-group-heading">${group}</h3>
       <div class="skill-choice-columns">
@@ -293,12 +293,12 @@ function render() {
     const stats = [ ['str','S'], ['per','P'], ['end','E'], ['cha','C'], ['int','I'], ['agi','A'], ['luck','L'] ];
     const modifierText = stats.map(([id, abbreviation]) => {
       const modifier = Number(origin.specialModifiers?.[id] || 0);
-      return `<span>${abbreviation}${modifier >= 0 ? '+' : ''}${modifier}</span>`;
+      return `<span>${abbreviation} ${modifier === 0 ? '±0' : `${modifier > 0 ? '+' : ''}${modifier}`}</span>`;
     }).join('');
     const abilities = (origin.abilities || []).map(ability =>
       `<div class="origin-ability"><strong>${ability.name}</strong><div>${ability.description}</div></div>`
     ).join('');
-    content.innerHTML = `<h2>Origin</h2>
+    content.innerHTML = `<h2>Origin</h2><p>Choose your character's origin. This choice will determine your starting SPECIAL, XP, Caps, and abilities.</p>
       <div class="origin-grid">${FALLOUT_ORIGINS.map(entry => `<button type="button" class="origin-option ${creation.origin === entry.id ? 'selected' : ''}" ${!entry.enabled ? 'disabled title="Origin rules not yet defined"' : ''} data-origin="${entry.id}">${entry.name}</button>`).join('')}</div>
       <div class="origin-details"><div class="origin-modifiers">${modifierText}</div>
       <div class="origin-resources"><span>${origin.startingXP ?? 0} XP</span><span>${Number(origin.startingCaps || 0).toLocaleString('en-US')} Caps</span></div>
@@ -310,7 +310,7 @@ function render() {
   } else if (creation.currentStep === 'equipment') {
     content.innerHTML = renderEquipmentStep();
   } else {
-    content.innerHTML = `<h2>S.P.E.C.I.A.L.</h2><p>Each rank is a Genesys characteristic. The displayed Fallout score is derived from its rank. Buy higher ranks with starting XP; creation purchases may not exceed rank 5. One characteristic may be reduced to rank 1, adding 20 XP to the starting pool.</p>
+    content.innerHTML = `<h2>S.P.E.C.I.A.L.</h2><p>The displayed SPECIAL scores are derived from purchasable ranks. Buy higher ranks with starting XP. After character creation, these ranks can no longer be purchased. One characteristic may be reduced to rank 1, adding 20 XP to the starting pool. Luck is determined by origin and cannot be purchased.</p>
       <div class="special-build-list">${FALLOUT_RULES.special.map(s => {
         const rank = creation.ranks[s.id];
         const nextCost = (rank + 1) * 10;
@@ -354,10 +354,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const packageBuy=ev.target.closest('button[data-buy-package]');
     if(packageBuy&&!packageBuy.disabled){buyStarterPackage();return;}
-    const addContainer=ev.target.closest('button[data-container-add]');
-    if(addContainer){addEquipmentContainer();return;}
-    const removeContainer=ev.target.closest('button[data-container-remove]');
-    if(removeContainer){removeEquipmentContainer(Number(removeContainer.dataset.containerRemove));return;}
     const equipmentBuy=ev.target.closest('button[data-equipment-buy]');
     if(equipmentBuy&&!equipmentBuy.disabled){buyEquipment(equipmentBuy.dataset.equipmentBuy);return;}
     const equipmentRefund=ev.target.closest('button[data-equipment-refund]');
@@ -383,8 +379,6 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   });
   document.getElementById('builder-content').addEventListener('change', ev => {
-    const containerName=ev.target.closest('input[data-container-name]');
-    if(containerName){renameEquipmentContainer(Number(containerName.dataset.containerName),containerName.value);return;}
     const containerStowed=ev.target.closest('input[data-container-stowed]');
     if(containerStowed){setEquipmentContainerStowed(Number(containerStowed.dataset.containerStowed),containerStowed.checked);return;}
     const itemContainer=ev.target.closest('select[data-item-container]');

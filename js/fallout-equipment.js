@@ -38,21 +38,27 @@ function containerQuantityEnc(entries){
 }
 function containerEncumbrance(container){
   let total=containerQuantityEnc(creation.equipment.filter(e=>(e.containerId??0)===container.id));
-  if(/back[\s-]*pack/i.test(container.name))total=Math.max(0,total-4);
+  if(container.kind==='backpack')total=Math.max(0,total-4);
   return total;
 }
 function equipmentEncumbrance(){
   return creation.containers.filter(c=>!c.stowed).reduce((sum,c)=>sum+containerEncumbrance(c),0);
 }
-function equipmentThreshold(){return 5+creation.ranks.str+creation.equipment.reduce((sum,e)=>sum+((!containerById(e.containerId??0)?.stowed&&e.id==='backpack')?4:0),0);}
+function equipmentThreshold(){return 5+creation.ranks.str;}
 function equipmentArmor(){return creation.equipment.find(e=>e.instanceId===creation.equippedArmor&&itemById(e.id)?.category==='armor');}
-function canBuyEquipment(item){return item&&item.purchasable&&item.price!==null&&item.price>=0&&item.price<=equipmentCaps();}
-function buyEquipment(id){const item=itemById(id);if(!canBuyEquipment(item))return;creation.equipment.push({instanceId:++equipmentInstanceCounter,id,containerId:0,source:'purchased'});rerenderEquipment();}
-function refundEquipment(instanceId){const index=creation.equipment.findIndex(e=>e.instanceId===instanceId);if(index===-1)return;if(creation.equippedArmor===instanceId)creation.equippedArmor=null;creation.equipment.splice(index,1);rerenderEquipment();}
-function addEquipmentContainer(){creation.containers.push({id:++equipmentContainerCounter,name:'Container',stowed:false});rerenderEquipment();}
-function removeEquipmentContainer(id){if(id===0)return;const c=containerById(id);if(!c)return;creation.equipment.forEach(e=>{if((e.containerId??0)===id)e.containerId=0;});creation.containers=creation.containers.filter(x=>x.id!==id);rerenderEquipment();}
-function renameEquipmentContainer(id,name){const c=containerById(id);if(c&&id!==0){c.name=name;render();}}
-function setEquipmentContainerStowed(id,stowed){const c=containerById(id);if(c){c.stowed=stowed;rerenderEquipment();}}
+function canBuyEquipment(item){return !!(item&&item.purchasable&&item.price!==null&&item.price>=0&&item.price<=equipmentCaps()&&(!['backpack','footlocker'].includes(item.id)||!creation.equipment.some(entry=>entry.id===item.id)));}
+function addPurchasedEquipment(id,source){
+  if(['backpack','footlocker'].includes(id)&&creation.equipment.some(entry=>entry.id===id))return null;
+  const entry={instanceId:++equipmentInstanceCounter,id,containerId:0,source};
+  creation.equipment.push(entry);
+  if(id==='backpack'||id==='footlocker')creation.containers.push({id:++equipmentContainerCounter,name:id==='backpack'?'Backpack':'Footlocker',kind:id,ownerInstanceId:entry.instanceId,stowed:id==='footlocker'});
+  return entry;
+}
+function buyEquipment(id){const item=itemById(id);if(!canBuyEquipment(item))return;addPurchasedEquipment(id,'purchased');rerenderEquipment();}
+function refundEquipment(instanceId){const index=creation.equipment.findIndex(e=>e.instanceId===instanceId);if(index===-1)return;if(creation.equippedArmor===instanceId)creation.equippedArmor=null;const ownedContainer=creation.containers.find(c=>c.ownerInstanceId===instanceId);
+  if(ownedContainer){creation.equipment.forEach(e=>{if(e.containerId===ownedContainer.id)e.containerId=0;});creation.containers=creation.containers.filter(c=>c!==ownedContainer);}
+  creation.equipment.splice(index,1);rerenderEquipment();}
+function setEquipmentContainerStowed(id,stowed){const c=containerById(id);if(c && c.kind!=='footlocker' && c.id!==0){c.stowed=stowed;rerenderEquipment();}}
 function moveEquipmentItem(instanceId,containerId){const e=creation.equipment.find(x=>x.instanceId===instanceId);if(e&&containerById(containerId)){e.containerId=containerId;rerenderEquipment();}}
 function starterPackageIds(){
   const starter=currentOrigin().starterEquipment;
@@ -68,11 +74,11 @@ function starterPackage(){
   const price=valid?items.reduce((n,it)=>n+it.price,0):null;
   return {ids,items,valid,price};
 }
-function canBuyStarterPackage(){const p=starterPackage();return p.valid&&p.ids.length>0&&p.price<=equipmentCaps();}
+function canBuyStarterPackage(){const p=starterPackage();return p.valid&&p.ids.length>0&&p.price<=equipmentCaps()&&['backpack','footlocker'].every(id=>p.ids.filter(itemId=>itemId===id).length+creation.equipment.filter(entry=>entry.id===id).length<=1);}
 function buyStarterPackage(){
   if(!canBuyStarterPackage())return;
   const p=starterPackage();
-  p.ids.forEach(id=>creation.equipment.push({instanceId:++equipmentInstanceCounter,id,containerId:0,source:'starter'}));
+  p.ids.forEach(id=>addPurchasedEquipment(id,'starter'));
   rerenderEquipment();
 }
 function equipmentCategoryCard(item){
@@ -96,20 +102,20 @@ function renderEquipmentStep(){
   const summary=`<div class="equipment-summary"><p><strong>Starting Wealth</strong>${currentOrigin().startingCaps.toLocaleString('en-US')} Caps</p><p><strong>Spent</strong>${spent.toLocaleString('en-US')} Caps</p><p><strong>Remaining</strong>${remaining.toLocaleString('en-US')} Caps</p><p><strong>Encumbrance</strong>${equipmentEncumbrance()} / ${equipmentThreshold()}</p><p><strong>Weapon Hard Points</strong>0 / 0</p><p><strong>Armor Hard Points</strong>0 / ${equipped?.hardPoints||0}</p></div>`;
   const packageData=starterPackage();
   const packageContents=packageData.items.map(item=>`<li>${escapeHtml(item?.name||'Unavailable item')}</li>`).join('');
-  const packageSection=equipmentDetails('package','Starting Package',`<p>Based on ${escapeHtml(currentOrigin().name)} and current Tag+Rank combat selections. Noncombat tagged-skill bonus items are not defined yet.</p><ul>${packageContents}</ul><p><strong>Total cost:</strong> ${packageData.price===null?'Unavailable':packageData.price.toLocaleString('en-US')+' Caps'}</p><button type="button" data-buy-package ${canBuyStarterPackage()?'':'disabled'}>Purchase Starting Package</button>`);
+  const packageSection=equipmentDetails('package','Starting Package',`<ul>${packageContents}</ul><p><strong>Total cost:</strong> ${packageData.price===null?'Unavailable':packageData.price.toLocaleString('en-US')+' Caps'}</p><button type="button" data-buy-package ${canBuyStarterPackage()?'':'disabled'}>Purchase Starting Package</button>`);
   const armorSection=equipmentDetails('armor','Equipped Armor',`<label>Armor: <select data-equipment-armor><option value="">None</option>${ownedArmor.map(e=>`<option value="${e.instanceId}" ${e.instanceId===creation.equippedArmor?'selected':''}>${escapeHtml(itemById(e.id).name)}</option>`).join('')}</select></label><p><strong>Armor Soak:</strong> ${equipped?.soak||0}</p><p><strong>Armor Defense:</strong> ${equipped?.defense||0}</p>${equipped?`<p>Currently wearing: ${escapeHtml(equipped.name)}</p>`:''}`);
   const inventoryContent=creation.containers.map(container=>{
     const entries=creation.equipment.filter(e=>(e.containerId??0)===container.id);
-    const header=`<div class="equipment-container-header"><label>${container.id===0?'<strong>Pockets</strong>':`<input type="text" data-container-name="${container.id}" value="${escapeHtml(container.name)}" aria-label="Container name">`}</label><span>Enc ${containerEncumbrance(container)}</span><label><input type="checkbox" data-container-stowed="${container.id}" ${container.stowed?'checked':''}> Stowed</label>${container.id===0?'':`<button type="button" data-container-remove="${container.id}">Remove Container</button>`}</div>`;
+    const header=`<div class="equipment-container-header"><strong>${escapeHtml(container.name)}</strong><span>Enc ${containerEncumbrance(container)}</span>${container.id===0?'':container.kind==='footlocker'?'<span>Settlement storage · Unavailable while traveling</span>':`<label><input type="checkbox" data-container-stowed="${container.id}" ${container.stowed?'checked':''}> Stowed</label>`}</div>`;
     const rows=entries.map(e=>{const item=itemById(e.id);if(!item)return '';return `<div class="equipment-inventory-row"><div class="equipment-inventory-name"><strong>${escapeHtml(item.name)}</strong>${e.instanceId===creation.equippedArmor?' (Equipped)':''}${e.source==='starter'?' · Starter Package':''}</div><div class="equipment-inventory-details">${escapeHtml(EQUIPMENT_LABELS[item.category])}${item.encumbrance!==null?` · Enc ${item.encumbrance}`:''}${item.price!==null?` · ${item.price.toLocaleString('en-US')} Caps`:''}</div><label>Container <select data-item-container="${e.instanceId}">${creation.containers.map(c=>`<option value="${c.id}" ${c.id===(e.containerId??0)?'selected':''}>${escapeHtml(c.name)}</option>`).join('')}</select></label><button type="button" data-equipment-refund="${e.instanceId}">Refund ${item.price===null?'':item.price.toLocaleString('en-US')+' Caps'}</button></div>`;}).join('');
     return `<div class="equipment-container">${header}${rows||'<p>No items in this container.</p>'}</div>`;
   }).join('');
-  const inventory=equipmentDetails('inventory',`Inventory (${creation.equipment.length})`,inventoryContent+'<button type="button" data-container-add>+ Add Container</button>');
+  const inventory=equipmentDetails('inventory',`Inventory (${creation.equipment.length})`,inventoryContent);
   const catalogs=Object.entries(EQUIPMENT_LABELS).map(([cat,title])=>{
     const entries=falloutEquipment.filter(item=>item.category===cat && item.subtype!=='service');
     if(!entries.length)return '';
     return equipmentDetails(cat,`${title} (${entries.length})`,entries.map(equipmentCategoryCard).join(''),true);
   }).join('');
-  return `<section class="equipment-step"><h2>Equipment</h2>${summary}<div id="starting-package-section">${packageSection}</div><div id="equipped-armor-section">${armorSection}</div><div id="equipment-inventory-section">${inventory}</div><div id="equipment-catalog-section"><h3>Equipment Catalog</h3>${catalogs}</div></section>`;
+  return `<section class="equipment-step"><h2>Equipment</h2><p class="equipment-intro">Using Caps, purchase your character's starting gear. A recommended Starting Package has been assembled for you based on your selected Origin and Tag skills. Add additional containers for where your equipment is being kept.</p>${summary}<div id="starting-package-section">${packageSection}</div><div id="equipped-armor-section">${armorSection}</div><div id="equipment-inventory-section">${inventory}</div><div id="equipment-catalog-section"><h3>Equipment Catalog</h3>${catalogs}</div></section>`;
 }
 function rerenderEquipment(){render();}

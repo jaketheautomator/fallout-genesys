@@ -188,3 +188,47 @@ body {font-family:Arial,sans-serif;}
 .origin-abilities { display:grid; gap:12px; }
 .origin-ability strong { display:block; margin-bottom:4px; color:#9de0af; }
 .origin-option { min-height:54px; }
+
+/* Equipment introduction spans both columns without displacing named grid areas. */
+.equipment-step {grid-template-areas:"title title" "intro intro" "summary summary" "package armor" "catalog inventory";}
+.equipment-step > .equipment-intro {grid-area:intro;margin:0;min-width:0;}
+@media(max-width:1000px) {
+  .equipment-step {grid-template-areas:"title" "intro" "summary" "package" "armor" "inventory" "catalog";}
+}
+
+/* Skills and SPECIAL: constrain the entire step, not just its interior list.
+   Keep full available width below 920px and center wider panels. */
+#builder-content:has(.skills-table),
+#builder-content:has(.special-build-list) {
+  box-sizing:border-box;
+  width:100%;
+  max-width:964px; /* 920px content + 22px padding on each side */
+  margin-left:auto;
+  margin-right:auto;
+}
+#builder-content .skills-table,
+#builder-content .special-build-list {
+  box-sizing:border-box;
+  width:100%;
+  max-width:920px;
+  margin-left:auto;
+  margin-right:auto;
+}
+/* Preserve the approved left/center/right skill layout without shrinking
+   radio groups or collapsing the header independently of the rows. */
+#builder-content .skills-table .skill-pick-grid {
+  grid-template-columns:minmax(125px,1fr) minmax(170px,1fr) minmax(136px,1fr);
+}
+#builder-content .skills-table .skill-choice-columns {
+  grid-template-columns:repeat(3,52px);
+  justify-content:center;
+}
+#builder-content .skills-table .skill-right-columns {
+  grid-template-columns:50px 76px;
+  column-gap:10px;
+  justify-content:end;
+}
+@media(max-width:650px) {
+  #builder-content .skills-table {overflow-x:auto;}
+  #builder-content .skills-table .skill-pick-grid {min-width:420px;}
+}
