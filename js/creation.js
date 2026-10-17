@@ -42,17 +42,19 @@ const MAX_SKILL_RANK = 2;
 const DEFAULT_TAG_PICKS = 4;
 const DEFAULT_TAG_RANK_PICKS = 4;
 
-const initialOrigin = FALLOUT_ORIGINS.find(origin => origin.enabled);
-if (!initialOrigin) throw new Error('No playable Fallout Origins defined');
-
-const creation = {
-  name: '', origin: initialOrigin.id, currentStep: 'origin',
-  ranks: { ...initialOrigin.startingRanks },
-  luckMax: initialOrigin.luck, luckCurrent: initialOrigin.luck, caps: initialOrigin.startingCaps,
-  skills: Object.fromEntries(FALLOUT_SKILLS.map(skill => [skill.id, { tag:'none', purchased:0 }])),
-  perks: {},
-  equipment: [], equippedArmor: null, containers: [{ id: 0, name: "Pockets", stowed: false }]
-};
+let creation;
+function initializeCreation() {
+  const initialOrigin = FALLOUT_ORIGINS.find(origin => origin.enabled);
+  if (!initialOrigin) throw new Error('No playable Origins defined');
+  creation = {
+    name: '', origin: initialOrigin.id, currentStep: 'origin',
+    ranks: { ...initialOrigin.startingRanks },
+    luckMax: initialOrigin.luck, luckCurrent: initialOrigin.luck, caps: initialOrigin.startingCaps,
+    skills: Object.fromEntries(FALLOUT_SKILLS.map(skill => [skill.id, { tag:'none', purchased:0 }])),
+    perks: {}, equipment: [], equippedArmor: null,
+    containers: [{ id:0, name:'Pockets', stowed:false }]
+  };
+}
 
 function currentOrigin() {
   return FALLOUT_ORIGINS.find(origin => origin.id === creation.origin);
@@ -152,7 +154,7 @@ function escapeHtml(value) {
 /* Matches the original ASOIAF Talents page: pyramid, expanded tiers, cards, and Purchased / XP buttons. */
 function renderPerks() {
   if(perkDataError) return `<h2>Perks</h2><p class="perk-error">${escapeHtml(perkDataError)}</p>`;
-  if(!falloutPerks.length) return '<h2>Perks</h2><p>Loading perks from talents.csv…</p>';
+  if(!falloutPerks.length) return '<h2>Perks</h2><p>Loading perks from perks.csv…</p>';
   return `<section class="talents-section"><h2>Perks</h2>
     <p>Purchase Perks using remaining XP. You must have more lower tier Perks to purchase higher Tier Perks. The blank spaces below show which Tiers are legal.</p>
     <div class="talent-pyramid-summary">${[1,2,3,4,5].map(tier => `
@@ -203,11 +205,11 @@ function parsePerkCsv(csv) {
 }
 async function loadPerks() {
   try {
-    const response=await fetch('data/talents.csv');
+    const response=await fetch('data/perks.csv');
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
     falloutPerks=parsePerkCsv(await response.text());
   } catch(error) {
-    perkDataError='Unable to load data/talents.csv. Serve the builder through a local web server or GitHub Pages; opening index.html directly from disk may block CSV loading.';
+    perkDataError='Unable to load data/perks.csv. Serve the builder through a local web server or GitHub Pages; opening index.html directly from disk may block CSV loading.';
     console.error('Perk catalog:',error);
   }
   render();
@@ -327,7 +329,10 @@ function render() {
   document.getElementById('summary-caps').textContent = creation.caps.toLocaleString('en-US');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  try { await originsReady; initializeCreation(); } catch (error) {
+    console.error(error); document.getElementById('builder-content').textContent = 'Unable to load Origins. Serve this site through a local web server or GitHub Pages.'; return;
+  }
   document.querySelectorAll('[data-step]').forEach(btn => btn.addEventListener('click', () => {
     creation.currentStep = btn.dataset.step;
     render();

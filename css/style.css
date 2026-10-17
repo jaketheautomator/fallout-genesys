@@ -1,5 +1,5 @@
 /* ================================================================
-   ASOIAF GENESYS CHARACTER BUILDER
+   GENESYS CHARACTER BUILDER
    ================================================================ */
 
 :root {
@@ -2171,3 +2171,285 @@ button:disabled {
 .summary-report-control button {
     width: 100%;
 }
+
+/* CHARACTER CREATION THEME AND OVERRIDES */
+/* Character creation styles and theme. */
+:root { --page-bg:#101a17; --panel-bg:#1b3025; --panel-alt:#15251b; --text:#e7f9e7; --text-muted:#a8c1ae; --border:#426b51; --border-dark:#568568; --accent:#9de0af; --accent-dark:#568568; --disabled-bg:#16231c; --disabled-text:#708575; }
+body {font-family:Arial,sans-serif;}
+.app-header h1 {font-weight:800;letter-spacing:5px;}
+#creation-nav button:disabled {opacity:.42;}
+#character-summary input {width:100%;min-width:0;background:#102018;color:#e7f9e7;border:1px solid #568568;padding:8px;}
+#character-summary p {overflow-wrap:anywhere;}
+.origin-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:18px 0;}
+.origin-option {background:#1b3025;border:1px solid #568568;border-radius:4px;padding:16px 12px;color:#e7f9e7;text-align:left;min-height:75px;}
+.origin-option small {display:block;color:#a8c1ae;font-size:11px;margin-top:7px;}
+.origin-option.selected {border:2px solid #9de0af;}
+.origin-option:disabled {opacity:.44;cursor:not-allowed;}
+.special-build-list {display:grid;gap:7px;margin:16px 0;}
+.special-build-row {display:grid;grid-template-columns:minmax(0,1fr) 75px 185px;align-items:center;gap:12px;padding:12px;background:#1b3025;border:1px solid #426b51;border-radius:3px;}
+.special-build-row strong {font-size:17px;color:#9de0af;letter-spacing:2px;}
+.special-build-row small {display:block;color:#a8c1ae;font-size:11px;}
+.special-score {text-align:center;font-weight:800;font-size:26px;color:#e7f9e7;}
+.rank-controls {display:flex;gap:8px;align-items:center;justify-content:flex-end;}
+.rank-controls button {width:32px;height:32px;padding:0;font-size:20px;}
+.rank-controls span {min-width:58px;text-align:center;font-size:12px;white-space:nowrap;}
+.luck-note {color:#a8c1ae;font-size:12px;}
+@media(max-width:720px){.special-build-row{grid-template-columns:minmax(0,1fr) 45px 130px;gap:5px;padding:8px}.rank-controls{gap:3px}.rank-controls span{min-width:45px;}}
+
+/* Luck appears as the seventh SPECIAL value without rank controls. */
+.luck-build-row .luck-controls { visibility:hidden; }
+
+/* Three aligned zones: left skill, centered radio cluster, right rank/purchase. */
+.skill-pick-grid {
+  display:grid;
+  grid-template-columns:minmax(115px,1fr) minmax(150px,1fr) minmax(132px,1fr);
+  column-gap:12px;
+  align-items:center;
+}
+.skill-group-header {
+  margin:18px 0 6px;
+  padding:0 10px 7px;
+  border-bottom:1px solid #568568;
+  align-items:end;
+}
+.skill-group-heading {margin:0;align-self:end;color:#9de0af;font-size:17px;line-height:20px;}
+.skill-choice-columns {
+  display:grid;
+  grid-template-columns:repeat(3,52px);
+  justify-content:center;
+  align-items:center;
+  min-width:0;
+}
+.skill-right-columns {
+  display:grid;
+  grid-template-columns:50px 76px;
+  justify-content:end;
+  align-items:center;
+  column-gap:10px;
+  min-width:0;
+}
+.skill-column-head {position:relative;height:53px;display:flex;align-items:flex-end;justify-content:center;min-width:0;text-align:center;}
+.skill-column-label {font-size:12px;font-weight:bold;color:#9de0af;line-height:20px;white-space:nowrap;}
+.skill-pick-count {position:absolute;top:0;left:0;right:0;font-size:10px;font-weight:normal;color:#e7f9e7;line-height:12px;}
+.skill-pick-row {background:#1b3025;border:1px solid #426b51;padding:7px 10px;margin-bottom:4px;min-height:47px;}
+.skill-name {display:flex;align-items:baseline;gap:5px;white-space:nowrap;min-width:0;}
+.skill-name strong {font-size:13px;}
+.skill-stat {color:#a8c1ae;font-size:10px;white-space:nowrap;}
+.skill-rank {font-size:20px;font-weight:bold;text-align:center;}
+.skill-radio {display:flex;justify-content:center;align-items:center;margin:0;}
+.skill-radio input {width:17px;height:17px;accent-color:#9de0af;cursor:pointer;}
+.skill-radio input:disabled {cursor:not-allowed;opacity:.45;}
+.skill-purchase {display:flex;gap:5px;justify-content:center;}
+.skill-purchase button {padding:0;width:32px;height:30px;font-size:18px;}
+.visually-hidden {position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+@media(max-width:770px){
+  .skill-pick-grid {grid-template-columns:minmax(95px,1fr) minmax(123px,1fr) minmax(107px,1fr);column-gap:5px;}
+  .skill-choice-columns {grid-template-columns:repeat(3,41px);}
+  .skill-right-columns {grid-template-columns:35px 65px;column-gap:5px;}
+  .skill-group-header,.skill-pick-row {padding-left:4px;padding-right:4px;}
+  .skill-column-label {font-size:10px;}
+  .skill-pick-count {font-size:9px;}
+  .skill-purchase {gap:3px;}
+  .skill-purchase button {width:28px;}
+  .skill-group-heading {font-size:15px;}
+}
+
+/* Original ASOIAF Talents page layout, adapted only to Fallout's palette. */
+.talents-section .talent-pyramid-summary {grid-template-columns:repeat(5,minmax(0,1fr));}
+.talents-section .talent-pyramid-slot-filled {background:#294f37;color:#e7f9e7;border-color:#9de0af;}
+.talents-section .talent-pyramid-slot-empty {background:#102018;border-color:#568568;}
+.talents-section .talent-card {background:#1b3025;color:#e7f9e7;}
+.talents-section .talent-card.talent-card-purchased {background:#294f37;border-color:#9de0af;}
+.talents-section .talent-card h4 {color:#9de0af;}
+.talents-section .talent-metadata {color:#a8c1ae;font-size:.9rem;margin-bottom:8px;}
+.talents-section .talent-description {white-space:pre-wrap;overflow-wrap:anywhere;}
+.talents-section .talent-prerequisites {color:#a8c1ae;font-size:.9rem;}
+.talents-section .talent-controls button {padding:7px 11px;}
+.perk-error{color:#f8b2a6}
+@media(max-width:700px){.talents-section .talent-pyramid-summary{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.talents-section .talent-pyramid-slot{padding:4px 2px;font-size:10px;min-height:29px;}}
+
+/* Equipment stage: original ASOIAF equipment layout, with Fallout colors. */
+.equipment-step {grid-template-columns:minmax(0,1fr) 280px;}
+.equipment-step .equipment-catalog-category,
+.equipment-step .equipment-inventory-row,
+.equipment-step #starting-package-section,
+.equipment-step #equipped-armor-section,
+.equipment-step #equipment-inventory-section {background:#1b3025;color:#e7f9e7;border-color:#426b51;}
+.equipment-step .equipment-summary p {background:#1b3025;color:#e7f9e7;}
+.equipment-step .equipment-section-content {color:#e7f9e7;}
+.equipment-step .equipment-catalog-card h5 {color:#9de0af;}
+.equipment-step .equipment-catalog-card p {overflow-wrap:anywhere;}
+.equipment-step #equipped-armor-select,
+.equipment-step select[data-equipment-armor] {background:#102018;color:#e7f9e7;border:1px solid #568568;padding:6px;}
+.equipment-step .equipment-inventory-row button {width:100%;}
+@media(max-width:900px){.equipment-step{grid-template-columns:minmax(0,1fr);grid-template-areas:'title' 'summary' 'package' 'armor' 'inventory' 'catalog';}.equipment-step #equipment-inventory-section{position:static;max-height:none;}}
+@media(max-width:520px){.equipment-step .equipment-summary{grid-template-columns:repeat(2,minmax(0,1fr));}.equipment-step .equipment-catalog-card{grid-template-columns:minmax(0,1fr) auto;}.equipment-step .equipment-catalog-card button{grid-column:2;grid-row:1 / span 4;}}
+
+/* Roll20-style inventory containers */
+.equipment-container {border:1px solid #568568;background:#14281c;margin:12px 0;padding:10px;border-radius:4px;}
+.equipment-container-header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+.equipment-container-header>label:first-child{flex:1;min-width:110px;}
+.equipment-container-header input[type=text]{width:100%;box-sizing:border-box;}
+.equipment-container-header button{margin-left:auto;}
+.equipment-container select,.equipment-container input[type=text]{background:#102018;color:#e7f9e7;border:1px solid #568568;padding:5px;}
+.equipment-container .equipment-inventory-row{margin-top:6px;}
+
+
+/* Responsive builder frame: do not let summary content set the main track width. */
+.builder-layout { width:100%; min-width:0; grid-template-columns:minmax(0,1fr) minmax(0,250px); }
+.builder-layout > .builder,
+.builder-layout > #character-summary,
+#builder-content { min-width:0; max-width:100%; }
+#character-summary { width:100%; overflow-wrap:anywhere; }
+
+/* Skills: use the available builder width up to a comfortable reading width. */
+.skills-table { width:100%; max-width:550px; margin:0 auto; min-width:0; }
+.skills-table .skill-pick-grid { width:100%; min-width:0; }
+.skills-table .skill-pick-grid { grid-template-columns:minmax(125px,1fr) minmax(156px,1fr) minmax(136px,1fr); }
+.skills-table .skill-name { min-width:0; flex-wrap:wrap; }
+
+/* When the main builder and summary stack, let the builder fill the entire track. */
+@media (max-width:850px) {
+  .builder-layout { grid-template-columns:minmax(0,1fr); }
+  .builder-layout > .builder { width:100%; }
+  #character-summary { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+@media (max-width:600px) {
+  .skills-table .skill-pick-grid { grid-template-columns:minmax(100px,1fr) 126px 101px; column-gap:4px; }
+  .skills-table .skill-choice-columns { grid-template-columns:repeat(3,42px); }
+  .skills-table .skill-right-columns { grid-template-columns:32px 65px; column-gap:4px; }
+  .skills-table .skill-pick-row,
+  .skills-table .skill-group-header { padding-left:4px; padding-right:4px; }
+  .skills-table .skill-purchase button {width:29px;}
+  .skills-table .skill-column-label {font-size:10px;}
+  #character-summary {grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:420px) {
+  .skills-table {overflow-x:auto;}
+  .skills-table .skill-pick-grid {min-width:340px;}
+}
+
+/* Responsive equipment catalog: independent of nested inventory and page grid widths. */
+.equipment-step, .equipment-step > *,
+#equipment-catalog-section, .equipment-catalog-category,
+.equipment-catalog-category .equipment-section-content { min-width:0; max-width:100%; }
+@media (max-width:1100px) {
+  .equipment-step { grid-template-columns:minmax(0,1fr); grid-template-areas:"title" "summary" "package" "armor" "inventory" "catalog"; }
+  .equipment-step #equipment-inventory-section { position:static; max-height:none; }
+  .equipment-step .equipment-catalog-card {
+    grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);
+    min-width:0; max-width:100%;
+  }
+  .equipment-step .equipment-catalog-card button {
+    grid-column:2;
+    grid-row:auto;
+    justify-self:end;
+    max-width:100%;
+  }
+}
+@media (max-width:580px) {
+  .equipment-step .equipment-catalog-card { grid-template-columns:minmax(0,1fr); }
+  .equipment-step .equipment-catalog-card button { grid-column:1; grid-row:auto; justify-self:stretch; width:100%; }
+}
+
+/* Full-width SPECIAL builder consistent with the Skills interface. */
+.special-build-list { width:100%; max-width:550px; margin:16px auto; min-width:0; }
+.special-build-row strong { letter-spacing:0; }
+
+/* Origin rule summary, driven by origins.csv. */
+.origin-details { margin:14px 0; }
+.origin-modifiers { display:flex; flex-wrap:wrap; gap:12px; font-weight:700; color:#9de0af; margin:0 0 10px; }
+.origin-resources { display:flex; flex-wrap:wrap; gap:22px; margin-bottom:16px; font-weight:700; }
+.origin-abilities { display:grid; gap:12px; }
+.origin-ability strong { display:block; margin-bottom:4px; color:#9de0af; }
+.origin-option { min-height:54px; }
+
+/* Equipment introduction spans both columns without displacing named grid areas. */
+.equipment-step {grid-template-areas:"title title" "intro intro" "summary summary" "package armor" "catalog inventory";}
+.equipment-step > .equipment-intro {grid-area:intro;margin:0;min-width:0;}
+@media(max-width:1000px) {
+  .equipment-step {grid-template-areas:"title" "intro" "summary" "package" "armor" "inventory" "catalog";}
+}
+
+/* Skills and SPECIAL: constrain the entire step, not just its interior list.
+   Keep full available width below 550px and center wider panels. */
+#builder-content:has(.skills-table),
+#builder-content:has(.special-build-list) {
+  box-sizing:border-box;
+  width:100%;
+  max-width:594px; /* 550px content + 22px padding on each side */
+  margin-left:auto;
+  margin-right:auto;
+}
+#builder-content .skills-table,
+#builder-content .special-build-list {
+  box-sizing:border-box;
+  width:100%;
+  max-width:550px;
+  margin-left:auto;
+  margin-right:auto;
+}
+/* Preserve the approved left/center/right skill layout without shrinking
+   radio groups or collapsing the header independently of the rows. */
+#builder-content .skills-table .skill-pick-grid {
+  grid-template-columns:minmax(125px,1fr) minmax(170px,1fr) minmax(136px,1fr);
+}
+#builder-content .skills-table .skill-choice-columns {
+  grid-template-columns:repeat(3,52px);
+  justify-content:center;
+}
+#builder-content .skills-table .skill-right-columns {
+  grid-template-columns:50px 76px;
+  column-gap:10px;
+  justify-content:end;
+}
+@media(max-width:650px) {
+  #builder-content .skills-table {overflow-x:auto;}
+  #builder-content .skills-table .skill-pick-grid {min-width:420px;}
+}
+
+/* REVIEW — read-only character record */
+.review-step {max-width:100%;min-width:0;display:grid;gap:15px;}
+.review-step > p {margin:0;}
+.review-step details {min-width:0;border:1px solid #496f57;border-radius:4px;background:#15271e;}
+.review-step details > summary {cursor:pointer;padding:12px 14px;color:#a4e0b5;font-weight:bold;font-size:15px;}
+.review-section {padding:8px 14px 16px;min-width:0;}
+.review-overview {display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px;background:#1b3426;border:1px solid #6b9e7a;border-radius:4px;}
+.review-overview h3,.review-overview p {margin:0;}
+.review-overview > div:last-child {display:grid;text-align:right;gap:3px;}
+.review-overview small,.review-resources small {display:block;color:#a8bdb1;}
+.review-resources {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.review-resources > div {text-align:center;background:#1b3426;border:1px solid #4d755d;padding:12px 5px;}
+.review-resources strong {display:block;font-size:20px;}
+.review-special {display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;}
+.review-special > div {min-width:0;text-align:center;background:#1b3426;padding:8px 2px;display:grid;gap:5px;}
+.review-special span,.review-special small {color:#b7dbc1;}
+.review-special strong {font-size:22px;}
+.review-special small {font-size:10px;overflow-wrap:anywhere;}
+.review-stats {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:13px 0;}
+.review-stats > div,.review-skill {display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 9px;background:#1b3426;min-width:0;}
+.review-skill-group h4 {margin:15px 0 6px;}
+.review-skill-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;}
+.review-skill small {margin-left:6px;color:#a4b7a8;}
+.review-skill em {margin-left:5px;color:#b9e6bb;font-size:11px;}
+.review-cards {display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;}
+.review-cards article {border:1px solid #426b52;padding:10px;background:#203629;}
+.review-cards article small {display:block;margin:5px 0;}
+.review-cards article p {margin:6px 0 0;white-space:pre-line;}
+.review-container {border-bottom:1px solid #425d48;padding:6px 0;}
+.review-container h4 {margin:5px 0;}
+.review-container h4 small {font-weight:normal;margin-left:10px;}
+.review-container p {margin:7px 0;}
+.review-validation button {margin-left:10px;}
+.review-valid {color:#a4e0b5;}
+.review-io {display:flex;align-items:center;flex-wrap:wrap;gap:12px;}
+.review-io > button,.review-load,.review-validation button {background:#2a5136;color:#e8ffeb;border:1px solid #80c997;border-radius:3px;padding:9px 14px;cursor:pointer;font-weight:600;}
+.review-load {position:relative;overflow:hidden;}
+.review-load input[type=file] {position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;}
+.review-io #review-file-message {flex-basis:100%;margin:0;}
+@media(max-width:650px){.review-special {grid-template-columns:repeat(4,minmax(0,1fr));}.review-skill-grid,.review-stats {grid-template-columns:1fr;}}
+
+/* Standalone equipment and perk browsers */
+.catalog-browser{max-width:1060px;margin:24px auto;padding:20px;background:var(--panel-bg);border:1px solid var(--border)}
+.catalog-browser input{display:block;width:100%;max-width:400px;margin:8px 0 22px;padding:9px;background:var(--page-bg);color:var(--text);border:1px solid var(--border)}
+#catalog-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:12px}.catalog-card{padding:15px;background:var(--panel-alt);border:1px solid var(--border);min-width:0}.catalog-card h3{margin-top:0;color:var(--accent)}.catalog-card p{overflow-wrap:anywhere}.catalog-card small{color:var(--text-muted)}

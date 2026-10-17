@@ -1,0 +1,11 @@
+id,name,enabled,startingXP,startingCaps,startingRanks,luck,tagPicks,tagRankPicks,skillBonuses,specialModifiers,abilities,starterEquipment,description,summary
+survivor,Survivor,true,110,1000,"{""str"":2,""per"":2,""end"":2,""cha"":2,""int"":2,""agi"":2}",5,5,4,{},"{""str"":0,""per"":0,""end"":0,""cha"":0,""int"":0,""agi"":0,""luck"":0}","[{""name"":""Adaptable"",""description"":""Pick an additional tag skill.""}]","{""armor"":""gambeson"",""fallbackSkill"":""small_guns"",""weapons"":{""big_guns"":""sword"",""energy_weapons"":""sword"",""melee_weapons"":""sword"",""small_guns"":""sword"",""unarmed"":""sword"",""throwing"":""sword""},""taggedSkillItems"":{}}",Six mechanical characteristics begin at rank 2 (displayed SPECIAL score 3). The Survivor starts with 110 XP.,110 XP · All ranks 2
+vault-dweller,Vault Dweller,false,,,,,,,,,,,,
+ghoul,Ghoul,false,,,,,,,,,,,,
+super-mutant,Super Mutant,false,,,,,,,,,,,,
+mister-handy,Mister Handy,false,,,,,,,,,,,,
+robobrain,Robobrain,false,,,,,,,,,,,,
+brotherhood-initiate,Brotherhood Initiate,false,,,,,,,,,,,,
+child-of-atom,Child of Atom,false,,,,,,,,,,,,
+tribal,Tribal,false,,,,,,,,,,,,
+enclave-remnant,Enclave Remnant,false,,,,,,,,,,,,
