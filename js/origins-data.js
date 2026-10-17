@@ -8,6 +8,9 @@ const FALLOUT_ORIGINS = Object.freeze([
     startingRanks: { str: 2, per: 2, end: 2, cha: 2, int: 2, agi: 2 },
     luck: 5,
     tagPicks: 5, tagRankPicks: 4, skillBonuses: {},
+    // Displayed SPECIAL adjustments are independent of purchased characteristic ranks.
+    specialModifiers: { str: 0, per: 0, end: 0, cha: 0, int: 0, agi: 0, luck: 0 },
+    abilities: [{ name: 'Adaptable', description: 'Pick an additional tag skill.' }],
     // Provisional catalog IDs. Define these per Origin as the Fallout catalog is developed.
     starterEquipment: {
       armor: 'gambeson', fallbackSkill: 'small_guns',

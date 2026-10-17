@@ -290,9 +290,19 @@ function render() {
   const content = document.getElementById('builder-content');
   if (creation.currentStep === 'origin') {
     const origin = currentOrigin();
-    content.innerHTML = `<h2>Origin</h2><p>Choose your character's origin. Origins without defined rules are unavailable until implemented.</p>
-      <div class="origin-grid">${FALLOUT_ORIGINS.map(entry => `<button type="button" class="origin-option ${creation.origin === entry.id ? 'selected' : ''}" ${!entry.enabled ? 'disabled title="Origin rules not yet defined"' : ''} data-origin="${entry.id}">${entry.name}<small>${entry.enabled ? entry.summary : 'Coming later'}</small></button>`).join('')}</div>
-      <h3>${origin.name}</h3><p>${origin.description}</p>`;
+    const stats = [ ['str','S'], ['per','P'], ['end','E'], ['cha','C'], ['int','I'], ['agi','A'], ['luck','L'] ];
+    const modifierText = stats.map(([id, abbreviation]) => {
+      const modifier = Number(origin.specialModifiers?.[id] || 0);
+      return `<span>${abbreviation}${modifier >= 0 ? '+' : ''}${modifier}</span>`;
+    }).join('');
+    const abilities = (origin.abilities || []).map(ability =>
+      `<div class="origin-ability"><strong>${ability.name}</strong><div>${ability.description}</div></div>`
+    ).join('');
+    content.innerHTML = `<h2>Origin</h2>
+      <div class="origin-grid">${FALLOUT_ORIGINS.map(entry => `<button type="button" class="origin-option ${creation.origin === entry.id ? 'selected' : ''}" ${!entry.enabled ? 'disabled title="Origin rules not yet defined"' : ''} data-origin="${entry.id}">${entry.name}</button>`).join('')}</div>
+      <div class="origin-details"><div class="origin-modifiers">${modifierText}</div>
+      <div class="origin-resources"><span>${origin.startingXP ?? 0} XP</span><span>${Number(origin.startingCaps || 0).toLocaleString('en-US')} Caps</span></div>
+      <div class="origin-abilities">${abilities}</div></div>`;
   } else if (creation.currentStep === 'skills') {
     content.innerHTML = renderSkills();
   } else if (creation.currentStep === 'perks') {
@@ -304,16 +314,15 @@ function render() {
       <div class="special-build-list">${FALLOUT_RULES.special.map(s => {
         const rank = creation.ranks[s.id];
         const nextCost = (rank + 1) * 10;
-        return `<div class="special-build-row"><div><strong>${s.id.toUpperCase()}</strong><small>${s.name} / ${s.genesys}</small></div>
+        return `<div class="special-build-row"><div><strong>${s.name}</strong></div>
           <output class="special-score">${FALLOUT_RULES.score[rank]}</output><div class="rank-controls"><button type="button" data-stat="${s.id}" data-delta="-1" ${rank === 1 || (rank === 2 && reducedAlready) ? 'disabled' : ''} aria-label="Decrease ${s.name}">−</button><span>Rank ${rank}</span><button type="button" data-stat="${s.id}" data-delta="1" ${rank === 5 || (rank === 1 ? remaining < FALLOUT_RULES.reducedRankBonusXP : remaining < nextCost) ? 'disabled' : ''} aria-label="Increase ${s.name}">+</button></div></div>`;
-      }).join('')}<div class="special-build-row luck-build-row"><div><strong>LCK</strong><small>Luck</small></div><output class="special-score">${creation.luckMax}</output><div class="rank-controls luck-controls"></div></div></div>`;
+      }).join('')}<div class="special-build-row luck-build-row"><div><strong>Luck</strong></div><output class="special-score">${creation.luckMax}</output><div class="rank-controls luck-controls"></div></div></div>`;
   }
   document.getElementById('summary-origin').textContent = currentOrigin().name;
   document.getElementById('summary-xp-spent').textContent = xpSpent();
   document.getElementById('summary-xp-remaining').textContent = remaining;
   creation.caps = equipmentCaps();
   document.getElementById('summary-caps').textContent = creation.caps.toLocaleString('en-US');
-  document.getElementById('summary-name').textContent = creation.name || 'Unnamed Wastelander';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

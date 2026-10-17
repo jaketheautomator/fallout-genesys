@@ -153,3 +153,38 @@ body {font-family:Arial,sans-serif;}
   .skills-table {overflow-x:auto;}
   .skills-table .skill-pick-grid {min-width:340px;}
 }
+
+/* Responsive equipment catalog: independent of nested inventory and page grid widths. */
+.equipment-step, .equipment-step > *,
+#equipment-catalog-section, .equipment-catalog-category,
+.equipment-catalog-category .equipment-section-content { min-width:0; max-width:100%; }
+@media (max-width:1100px) {
+  .equipment-step { grid-template-columns:minmax(0,1fr); grid-template-areas:"title" "summary" "package" "armor" "inventory" "catalog"; }
+  .equipment-step #equipment-inventory-section { position:static; max-height:none; }
+  .equipment-step .equipment-catalog-card {
+    grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);
+    min-width:0; max-width:100%;
+  }
+  .equipment-step .equipment-catalog-card button {
+    grid-column:2;
+    grid-row:auto;
+    justify-self:end;
+    max-width:100%;
+  }
+}
+@media (max-width:580px) {
+  .equipment-step .equipment-catalog-card { grid-template-columns:minmax(0,1fr); }
+  .equipment-step .equipment-catalog-card button { grid-column:1; grid-row:auto; justify-self:stretch; width:100%; }
+}
+
+/* Full-width SPECIAL builder consistent with the Skills interface. */
+.special-build-list { width:100%; max-width:920px; margin:16px auto; min-width:0; }
+.special-build-row strong { letter-spacing:0; }
+
+/* Origin rule summary, driven by origins-data.js. */
+.origin-details { margin:14px 0; }
+.origin-modifiers { display:flex; flex-wrap:wrap; gap:12px; font-weight:700; color:#9de0af; margin:0 0 10px; }
+.origin-resources { display:flex; flex-wrap:wrap; gap:22px; margin-bottom:16px; font-weight:700; }
+.origin-abilities { display:grid; gap:12px; }
+.origin-ability strong { display:block; margin-bottom:4px; color:#9de0af; }
+.origin-option { min-height:54px; }
