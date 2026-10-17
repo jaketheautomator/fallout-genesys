@@ -47,7 +47,7 @@ function renderReview() {
     <details open><summary>Perks</summary><div class="review-section">${perks}</div></details>
     <details open><summary>Equipment &amp; Inventory</summary><div class="review-section"><p><strong>Equipped Armor:</strong> ${reviewEsc(armor?.name||'None')}${armor?` · Soak ${armor.soak||0} · Defense ${armor.defense||0}`:''}</p><h4>Weapons</h4>${armament.length?`<ul>${armament.map(e=>{const w=itemById(e.id);return `<li>${reviewEsc(w.name)} · ${reviewEsc(w.skill||'')} · Damage ${reviewEsc(w.damage||'—')} · Crit ${reviewEsc(w.critical||'—')}</li>`;}).join('')}</ul>`:'<p>No weapons owned.</p>'}<h4>Containers</h4>${containers}</div></details>
     <details open><summary>Validation</summary><div class="review-section">${issues.length?`<ul class="review-validation">${issues.map(([step,message])=>`<li>${reviewEsc(message)} <button type="button" data-review-goto="${step}">Go to ${step}</button></li>`).join('')}</ul>`:'<p class="review-valid">All required selections and spending checks pass. Unspent XP and Caps are permitted.</p>'}</div></details>
-    <div class="review-io"><button type="button" data-review-export>Export JSON</button><label class="review-load">Load JSON <input type="file" accept=".json,application/json" data-review-file></label><p id="review-file-message" role="status"></p></div>
+    <div class="review-io"><button type="button" data-review-export>Export JSON</button><button type="button" data-review-copy>Copy JSON</button><label class="review-load">Load JSON <input type="file" accept=".json,application/json" data-review-file></label><p id="review-file-message" role="status"></p></div>
   </section>`;
 }
 function buildCharacterSave(){
@@ -64,6 +64,16 @@ function exportCharacterJSON(){
   const link=document.createElement('a');link.href=url;
   link.download=`${(creation.name.trim()||'wastelander').replace(/[^a-z0-9_-]+/gi,'-')}-fallout.json`;
   document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function copyCharacterJSON(){
+  const message=document.getElementById('review-file-message');
+  try {
+    if (!navigator.clipboard?.writeText) throw new Error('Clipboard access is unavailable.');
+    await navigator.clipboard.writeText(JSON.stringify(buildCharacterSave(),null,2));
+    if (message) message.textContent='Character JSON copied to clipboard.';
+  } catch (error) {
+    if (message) message.textContent='Copy failed. Use Export JSON instead (clipboard access may require HTTPS or localhost).';
+  }
 }
 function importCharacterJSON(text){
   let data;try{data=JSON.parse(text);}catch{throw new Error('The selected file is not valid JSON.');}
@@ -102,6 +112,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('builder-content').addEventListener('click',e=>{
     const go=e.target.closest('[data-review-goto]');if(go){creation.currentStep=go.dataset.reviewGoto;render();return;}
     if(e.target.closest('[data-review-export]'))exportCharacterJSON();
+    if(e.target.closest('[data-review-copy]'))void copyCharacterJSON();
   });
   document.getElementById('builder-content').addEventListener('change',async e=>{
     if(!e.target.matches('[data-review-file]'))return;
