@@ -128,7 +128,7 @@ body {font-family:Arial,sans-serif;}
 #character-summary { width:100%; overflow-wrap:anywhere; }
 
 /* Skills: use the available builder width up to a comfortable reading width. */
-.skills-table { width:100%; max-width:920px; margin:0 auto; min-width:0; }
+.skills-table { width:100%; max-width:550px; margin:0 auto; min-width:0; }
 .skills-table .skill-pick-grid { width:100%; min-width:0; }
 .skills-table .skill-pick-grid { grid-template-columns:minmax(125px,1fr) minmax(156px,1fr) minmax(136px,1fr); }
 .skills-table .skill-name { min-width:0; flex-wrap:wrap; }
@@ -178,7 +178,7 @@ body {font-family:Arial,sans-serif;}
 }
 
 /* Full-width SPECIAL builder consistent with the Skills interface. */
-.special-build-list { width:100%; max-width:920px; margin:16px auto; min-width:0; }
+.special-build-list { width:100%; max-width:550px; margin:16px auto; min-width:0; }
 .special-build-row strong { letter-spacing:0; }
 
 /* Origin rule summary, driven by origins-data.js. */
@@ -197,12 +197,12 @@ body {font-family:Arial,sans-serif;}
 }
 
 /* Skills and SPECIAL: constrain the entire step, not just its interior list.
-   Keep full available width below 920px and center wider panels. */
+   Keep full available width below 550px and center wider panels. */
 #builder-content:has(.skills-table),
 #builder-content:has(.special-build-list) {
   box-sizing:border-box;
   width:100%;
-  max-width:964px; /* 920px content + 22px padding on each side */
+  max-width:594px; /* 550px content + 22px padding on each side */
   margin-left:auto;
   margin-right:auto;
 }
@@ -210,7 +210,7 @@ body {font-family:Arial,sans-serif;}
 #builder-content .special-build-list {
   box-sizing:border-box;
   width:100%;
-  max-width:920px;
+  max-width:550px;
   margin-left:auto;
   margin-right:auto;
 }
