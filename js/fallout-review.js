@@ -65,14 +65,93 @@ function exportCharacterJSON(){
   link.download=`${(creation.name.trim()||'wastelander').replace(/[^a-z0-9_-]+/gi,'-')}-fallout.json`;
   document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+/* A self-contained sheet snapshot. Consumers need no origin, talent or gear CSVs. */
+function buildPortableCharacterCopy() {
+  const origin = currentOrigin();
+  const stats = Object.fromEntries(FALLOUT_RULES.special.map(stat => [stat.id, {
+    name: stat.name,
+    characteristic: stat.genesys,
+    rank: creation.ranks[stat.id],
+    originModifier: Number(origin.specialModifiers?.[stat.id] || 0),
+    score: FALLOUT_RULES.score[creation.ranks[stat.id]] + Number(origin.specialModifiers?.[stat.id] || 0)
+  }]));
+  stats.luck = {
+    name: 'Luck', score: creation.luckMax + Number(origin.specialModifiers?.luck || 0),
+    maximum: creation.luckMax, current: creation.luckCurrent,
+    originModifier: Number(origin.specialModifiers?.luck || 0)
+  };
+  const skills = FALLOUT_SKILLS.map(skill => {
+    const selected = creation.skills[skill.id];
+    return {
+      id: skill.id, name: skill.name, group: skill.group,
+      characteristic: skill.stat, tag: selected.tag !== 'none',
+      tagSelection: selected.tag,
+      purchasedRanks: selected.purchased,
+      originRanks: skillBonus(skill.id),
+      tagBonusRanks: selected.tag === 'tagrank' ? 1 : 0,
+      rank: skillRank(skill.id)
+    };
+  });
+  const perks = [];
+  for (const [id, quantity] of Object.entries(creation.perks)) {
+    const perk = perkById(id);
+    if (!perk || !quantity) throw new Error(`Perk definition unavailable: ${id}`);
+    for (let rank = 1; rank <= quantity; rank++) {
+      const tier = perkEffectiveTier(perk, rank);
+      perks.push({ id, name: perk.name, rank, tier,
+        activation: perk.activation, type: String(perk.activation || '').startsWith('Passive') ? 'Passive' : 'Active',
+        ranked: perk.ranked, description: perk.description,
+        prerequisites: perk.prerequisites.map(key => ({id:key,name:perkById(key)?.name || key})),
+        xpCost: tier * 5 });
+    }
+  }
+  const equipment = creation.equipment.map(entry => {
+    const definition = itemById(entry.id);
+    if (!definition) throw new Error(`Equipment definition unavailable: ${entry.id}`);
+    return {
+      ...definition, instanceId: entry.instanceId, containerId: entry.containerId,
+      source: entry.source, equipped: creation.equippedArmor === entry.instanceId,
+      pricePaid: definition.price
+    };
+  });
+  const containers = creation.containers.map(container => ({
+    ...container, contents: equipment.filter(item => item.containerId === container.id).map(item => item.instanceId),
+    encumbrance: containerEncumbrance(container),
+    carried: !container.stowed && container.kind !== 'footlocker'
+  }));
+  const armor = equipment.find(item => item.equipped && item.category === 'armor') || null;
+  const totalXP = effectiveStartingXP();
+  const spentXP = xpSpent();
+  return {
+    format: 'fallout-genesys-portable-character', version: 1,
+    exportedAt: new Date().toISOString(),
+    character: buildCharacterSave().character,
+    sheet: {
+      name: creation.name,
+      origin: { id: origin.id, name: origin.name, abilities: (origin.abilities || []).map(a => ({...a})),
+        startingXP: origin.startingXP, startingCaps: origin.startingCaps,
+        tagPicks: origin.tagPicks, tagRankPicks: origin.tagRankPicks },
+      special: stats, skills, perks, equipment, containers,
+      equippedArmorInstanceId: creation.equippedArmor,
+      combat: { weapons: equipment.filter(item => item.category === 'weapon'), armor,
+        woundThreshold: 10 + creation.ranks.str,
+        strainThreshold: 10 + creation.ranks.end,
+        soak: Number(armor?.soak || 0),
+        rangedDefense: Number(armor?.defense || 0), meleeDefense: Number(armor?.defense || 0) },
+      encumbrance: { current: equipmentEncumbrance(), maximum: equipmentThreshold() },
+      xp: { starting: totalXP, spent: spentXP, remaining: totalXP - spentXP },
+      caps: { starting: origin.startingCaps, spent: equipmentSpent(), remaining: equipmentCaps() }
+    }
+  };
+}
 async function copyCharacterJSON(){
   const message=document.getElementById('review-file-message');
   try {
     if (!navigator.clipboard?.writeText) throw new Error('Clipboard access is unavailable.');
-    await navigator.clipboard.writeText(JSON.stringify(buildCharacterSave(),null,2));
-    if (message) message.textContent='Character JSON copied to clipboard.';
+    await navigator.clipboard.writeText(JSON.stringify(buildPortableCharacterCopy(),null,2));
+    if (message) message.textContent='Complete, self-contained character JSON copied to clipboard.';
   } catch (error) {
-    if (message) message.textContent='Copy failed. Use Export JSON instead (clipboard access may require HTTPS or localhost).';
+    if (message) message.textContent=`Copy failed: ${error.message} (clipboard access may require HTTPS or localhost).`;
   }
 }
 function importCharacterJSON(text){
