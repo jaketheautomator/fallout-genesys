@@ -309,6 +309,8 @@ function render() {
     content.innerHTML = renderPerks();
   } else if (creation.currentStep === 'equipment') {
     content.innerHTML = renderEquipmentStep();
+  } else if (creation.currentStep === 'review') {
+    content.innerHTML = renderReview();
   } else {
     content.innerHTML = `<h2>S.P.E.C.I.A.L.</h2><p>The displayed SPECIAL scores are derived from purchasable ranks. Buy higher ranks with starting XP. After character creation, these ranks can no longer be purchased. One characteristic may be reduced to rank 1, adding 20 XP to the starting pool. Luck is determined by origin and cannot be purchased.</p>
       <div class="special-build-list">${FALLOUT_RULES.special.map(s => {
