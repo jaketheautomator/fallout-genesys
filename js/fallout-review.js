@@ -28,7 +28,7 @@ function renderReview() {
   const issues=reviewValidation();
   const special=[...FALLOUT_RULES.special.map(s=>({name:s.name,initial:s.id.toUpperCase().slice(0,1),value:FALLOUT_RULES.score[creation.ranks[s.id]]+(origin.specialModifiers?.[s.id]||0)})),{name:'Luck',initial:'L',value:creation.luckMax}];
   const equipped=equipmentArmor(), armor=equipped?itemById(equipped.id):null;
-  const derived=[['Wound Threshold',10+creation.ranks.str],['Strain Threshold',10+creation.ranks.end],['Armor Soak',armor?.soak||0],['Armor Defense',armor?.defense||0],['Encumbrance',`${equipmentEncumbrance()} / ${equipmentThreshold()}`]];
+  const derived=[['Wound Threshold',10+creation.ranks.str],['Strain Threshold',10+creation.ranks.end],['Soak',creation.ranks.str + Number(armor?.soak||0)],['Ward',creation.ranks.end + Number(armor?.ward||0)],['Armor Defense',armor?.defense||0],['Encumbrance',`${equipmentEncumbrance()} / ${equipmentThreshold()}`]];
   const skillGroups=['General','Combat','Social','Knowledge'].map(group=>`<div class="review-skill-group"><h4>${group}</h4><div class="review-skill-grid">${FALLOUT_SKILLS.filter(s=>s.group===group).map(s=>`<div class="review-skill"><span>${reviewEsc(s.name)} <small>${s.stat.toUpperCase()}</small>${creation.skills[s.id].tag!=='none'?` <em>${creation.skills[s.id].tag==='tagrank'?'Tag+Rank':'Tag'}</em>`:''}</span><strong>${skillRank(s.id)}</strong></div>`).join('')}</div></div>`).join('');
   const perks=[1,2,3,4,5].map(tier=>{
     const owned=purchasedPerksAtTier(tier);
@@ -39,13 +39,13 @@ function renderReview() {
     return `<div class="review-container"><h4>${reviewEsc(c.name)} <small>${c.kind==='footlocker'?'Settlement storage · unavailable while traveling':c.stowed?'Stowed':`Enc ${containerEncumbrance(c)}`}</small></h4>${items.length?`<ul>${items.map(e=>{const item=itemById(e.id);return `<li>${reviewEsc(item?.name||e.id)}${e.instanceId===creation.equippedArmor?' (Equipped)':''}</li>`;}).join('')}</ul>`:'<p>Empty</p>'}</div>`;
   }).join('');
   const armament=creation.equipment.filter(e=>itemById(e.id)?.category==='weapon');
-  return `<section class="review-step"><h2>Review</h2><p>Review the completed character, then export a JSON file to save or reload this build. To export to Roll20, click the Copy JSON button and paste the JSON into the Roll20 character sheet. You must delete your Roll20 sheet's Character Name to reveal the importer.</p>
+  return `<section class="review-step"><h2>Review</h2><p>Review the completed character, then export a JSON file to save or reload this build.</p>
     <div class="review-overview"><div><h3>${reviewEsc(creation.name.trim()||'Wastelander')}</h3><p>${reviewEsc(origin.name)}</p></div><div><strong>${money(equipmentCaps())} Caps</strong><small>Remaining</small></div></div>
     <div class="review-resources"><div><strong>${effectiveStartingXP()}</strong><small>Starting XP</small></div><div><strong>${xpSpent()}</strong><small>Spent XP</small></div><div><strong>${effectiveStartingXP()-xpSpent()}</strong><small>Remaining XP</small></div></div>
     <details open><summary>SPECIAL &amp; Statistics</summary><div class="review-section"><div class="review-special">${special.map(s=>`<div title="${reviewEsc(s.name)}"><span>${s.initial}</span><strong>${s.value}</strong><small>${reviewEsc(s.name)}</small></div>`).join('')}</div><div class="review-stats">${derived.map(([k,v])=>`<div><span>${k}</span><strong>${v}</strong></div>`).join('')}</div>${(origin.abilities||[]).map(a=>`<p><strong>${reviewEsc(a.name)}:</strong> ${reviewEsc(a.description)}</p>`).join('')}</div></details>
     <details open><summary>Skills</summary><div class="review-section">${skillGroups}</div></details>
     <details open><summary>Perks</summary><div class="review-section">${perks}</div></details>
-    <details open><summary>Equipment &amp; Inventory</summary><div class="review-section"><p><strong>Equipped Armor:</strong> ${reviewEsc(armor?.name||'None')}${armor?` · Soak ${armor.soak||0} · Defense ${armor.defense||0}`:''}</p><h4>Weapons</h4>${armament.length?`<ul>${armament.map(e=>{const w=itemById(e.id);return `<li>${reviewEsc(w.name)} · ${reviewEsc(w.skill||'')} · Damage ${reviewEsc(w.damage||'—')} · Crit ${reviewEsc(w.critical||'—')}</li>`;}).join('')}</ul>`:'<p>No weapons owned.</p>'}<h4>Containers</h4>${containers}</div></details>
+    <details open><summary>Equipment &amp; Inventory</summary><div class="review-section"><p><strong>Equipped Armor:</strong> ${reviewEsc(armor?.name||'None')}${armor?` · Soak ${armor.soak||0} · Ward ${armor.ward||0} · Defense ${armor.defense||0}`:''}</p><h4>Weapons</h4>${armament.length?`<ul>${armament.map(e=>{const w=itemById(e.id);return `<li>${reviewEsc(w.name)} · ${reviewEsc(w.skill||'')} · Damage ${reviewEsc(w.damage||'—')} · Crit ${reviewEsc(w.critical||'—')}</li>`;}).join('')}</ul>`:'<p>No weapons owned.</p>'}<h4>Containers</h4>${containers}</div></details>
     <details open><summary>Validation</summary><div class="review-section">${issues.length?`<ul class="review-validation">${issues.map(([step,message])=>`<li>${reviewEsc(message)} <button type="button" data-review-goto="${step}">Go to ${step}</button></li>`).join('')}</ul>`:'<p class="review-valid">All required selections and spending checks pass. Unspent XP and Caps are permitted.</p>'}</div></details>
     <div class="review-io"><button type="button" data-review-export>Export JSON</button><button type="button" data-review-copy>Copy JSON</button><label class="review-load">Load JSON <input type="file" accept=".json,application/json" data-review-file></label><p id="review-file-message" role="status"></p></div>
   </section>`;
@@ -136,7 +136,8 @@ function buildPortableCharacterCopy() {
       combat: { weapons: equipment.filter(item => item.category === 'weapon'), armor,
         woundThreshold: 10 + creation.ranks.str,
         strainThreshold: 10 + creation.ranks.end,
-        soak: Number(armor?.soak || 0),
+        soak: creation.ranks.str + Number(armor?.soak || 0),
+        ward: creation.ranks.end + Number(armor?.ward || 0),
         rangedDefense: Number(armor?.defense || 0), meleeDefense: Number(armor?.defense || 0) },
       encumbrance: { current: equipmentEncumbrance(), maximum: equipmentThreshold() },
       xp: { starting: totalXP, spent: spentXP, remaining: totalXP - spentXP },

@@ -21,7 +21,7 @@ async function loadFalloutEquipment() {
     const groups=await Promise.all(Object.entries(EQUIPMENT_FILES).map(async ([category,file])=>{
       const response=await fetch(`data/equipment/${file}.csv`);
       if(!response.ok)throw new Error(`${file}.csv: HTTP ${response.status}`);
-      return equipmentCsvParse(await response.text()).map(row=>({ ...row,category, price:equipmentNum(row.price), encumbrance:equipmentNum(row.encumbrance),rarity:equipmentNum(row.rarity),soak:equipmentNum(row.soak),defense:equipmentNum(row.defense),hardPoints:equipmentNum(row.hardPoints),hardPointCost:equipmentNum(row.hardPointCost),purchasable:!['false','0','no'].includes(String(row.purchasable||'').toLowerCase()) }));
+      return equipmentCsvParse(await response.text()).map(row=>({ ...row,category, price:equipmentNum(row.price), encumbrance:equipmentNum(row.encumbrance),rarity:equipmentNum(row.rarity),soak:equipmentNum(row.soak),ward:equipmentNum(row.ward)??0,defense:equipmentNum(row.defense),hardPoints:equipmentNum(row.hardPoints),hardPointCost:equipmentNum(row.hardPointCost),purchasable:!['false','0','no'].includes(String(row.purchasable||'').toLowerCase()) }));
     }));
     falloutEquipment=groups.flat();equipmentLoadError='';
   }catch(err){equipmentLoadError=err.message;console.error('Equipment catalog:',err);}
@@ -85,7 +85,7 @@ function equipmentCategoryCard(item){
   const price=item.price===null?'Not normally purchasable':`${item.price.toLocaleString('en-US')} Caps`;
   const details=[];
   if(item.category==='weapon')details.push(item.skill||'',item.damage?`Damage ${item.damageType==='brawn-plus'?'+':''}${item.damage}`:'',item.critical?`Crit ${item.critical}`:'',item.range||'');
-  if(item.category==='armor')details.push(`Soak ${item.soak??0}`,`Defense ${item.defense??0}`);
+  if(item.category==='armor')details.push(`Soak ${item.soak??0}`,`Ward ${item.ward??0}`,`Defense ${item.defense??0}`);
   if(item.encumbrance!==null)details.push(`Enc ${item.encumbrance}`);
   if(item.hardPoints!==null)details.push(`HP ${item.hardPoints}`);
   if(item.hardPointCost!==null)details.push(`HP Cost ${item.hardPointCost}`);
@@ -103,7 +103,7 @@ function renderEquipmentStep(){
   const packageData=starterPackage();
   const packageContents=packageData.items.map(item=>`<li>${escapeHtml(item?.name||'Unavailable item')}</li>`).join('');
   const packageSection=equipmentDetails('package','Starting Package',`<ul>${packageContents}</ul><p><strong>Total cost:</strong> ${packageData.price===null?'Unavailable':packageData.price.toLocaleString('en-US')+' Caps'}</p><button type="button" data-buy-package ${canBuyStarterPackage()?'':'disabled'}>Purchase Starting Package</button>`);
-  const armorSection=equipmentDetails('armor','Equipped Armor',`<label>Armor: <select data-equipment-armor><option value="">None</option>${ownedArmor.map(e=>`<option value="${e.instanceId}" ${e.instanceId===creation.equippedArmor?'selected':''}>${escapeHtml(itemById(e.id).name)}</option>`).join('')}</select></label><p><strong>Armor Soak:</strong> ${equipped?.soak||0}</p><p><strong>Armor Defense:</strong> ${equipped?.defense||0}</p>${equipped?`<p>Currently wearing: ${escapeHtml(equipped.name)}</p>`:''}`);
+  const armorSection=equipmentDetails('armor','Equipped Armor',`<label>Armor: <select data-equipment-armor><option value="">None</option>${ownedArmor.map(e=>`<option value="${e.instanceId}" ${e.instanceId===creation.equippedArmor?'selected':''}>${escapeHtml(itemById(e.id).name)}</option>`).join('')}</select></label><p><strong>Armor Soak:</strong> ${equipped?.soak||0}</p><p><strong>Armor Ward:</strong> ${equipped?.ward||0}</p><p><strong>Armor Defense:</strong> ${equipped?.defense||0}</p>${equipped?`<p>Currently wearing: ${escapeHtml(equipped.name)}</p>`:''}`);
   const inventoryContent=creation.containers.map(container=>{
     const entries=creation.equipment.filter(e=>(e.containerId??0)===container.id);
     const header=`<div class="equipment-container-header"><strong>${escapeHtml(container.name)}</strong><span>Enc ${containerEncumbrance(container)}</span>${container.id===0?'':container.kind==='footlocker'?'<span>Settlement storage · Unavailable while traveling</span>':`<label><input type="checkbox" data-container-stowed="${container.id}" ${container.stowed?'checked':''}> Stowed</label>`}</div>`;

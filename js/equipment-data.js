@@ -276,6 +276,7 @@ function normalizeArmor(row) {
 
         defense: csvNumber(row.defense),
         soak: csvNumber(row.soak),
+        ward: csvNumber(row.ward),
         encumbrance: csvNullableNumber(row.encumbrance),
         hardPoints: csvNumber(row.hardPoints),
         price: csvNullableNumber(row.price),
